@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 use crate::*;
 
 #[derive(Debug, Clone)]
@@ -27,12 +26,4 @@ impl Create for GuiButtonS {
 			texture: Err(None),
 		}
 	}
-=======
-use crate::*;
-
-#[derive(Debug, Clone)]
-pub struct GuiButtonS {
-	pub(crate) name: String,
-	pub(crate) position: AabbS,
->>>>>>> dfed9cbafd8402bed0a415b7b580a4fbb0959c13
 }

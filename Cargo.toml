@@ -11,10 +11,7 @@ rand = "0.8.5"
 
 piston = "0.54.0"
 piston_window = "0.130.0"
-<<<<<<< HEAD
 gfx_device_gl = "0.16.2"
-=======
->>>>>>> dfed9cbafd8402bed0a415b7b580a4fbb0959c13
 
 
 [profile.dev]
@@ -28,8 +25,4 @@ opt-level = 3
 default = ["draw", "event"]
 
 draw = []
-<<<<<<< HEAD
 event = []
-=======
-event = []
->>>>>>> dfed9cbafd8402bed0a415b7b580a4fbb0959c13
