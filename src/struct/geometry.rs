@@ -58,3 +58,32 @@ pub mod position {
 		}
 	}
 }
+
+pub mod size {
+	use crate::*;
+
+	#[derive(Debug, Clone)]
+	pub struct Scale {
+		pub(crate) width: f64,
+		pub(crate) height: f64,
+	}
+
+	impl Create for Scale {
+		type Output = Scale;
+		type Facts = [f64; 2];
+
+		fn new(facts: Self::Output) -> Self::Output {
+			Scale {
+				width: facts.0,
+				height: facts.1,
+			}
+		}
+
+		fn default() -> Self::Output {
+			Scale {
+				width: 0.0,
+				height: 0.0,
+			}
+		}
+	}
+}
