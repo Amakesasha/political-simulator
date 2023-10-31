@@ -68,9 +68,13 @@ pub use crate::{
             logic::*,
         },
         game::*,
+<<<<<<< HEAD
         geometry::{
             position::*, size::*, *
         },
+=======
+        geometry::*,
+>>>>>>> dfed9cbafd8402bed0a415b7b580a4fbb0959c13
     },
     script::{r#trait::*, rand::*},
     system::{
