@@ -8,5 +8,5 @@ pub struct GuiButtonS {
 }
 
 impl Create for GuiButtonS {
-	
+	type Output = GuiButtonS;
 }
