@@ -15,15 +15,15 @@ pub mod aabb {
 
 		fn new(facts: Self::Output) -> Self::Output {
 			AabbS {
-				x: facts.0,
-				y: facts.1,
+				position: PositionS::new(facts[0]),
+				size: Scale::new(facts[1]),
 			}
 		}
 
 		fn default() -> Self::Output {
 			AabbS {
-				x: 0.0,
-				y: 0.0,
+				position: PositionS::default(),
+				size: Scale::default(),
 			}
 		}
 	}
@@ -57,4 +57,8 @@ pub mod position {
 			}
 		}
 	}
+}
+
+pub mod size {
+	
 }
