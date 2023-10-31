@@ -11,7 +11,6 @@ pub mod r#struct {
         pub mod context;
         pub mod font;
     }
-    pub mod game;
     pub mod logic {
         pub mod date;
         pub mod logic;
@@ -21,6 +20,8 @@ pub mod r#struct {
             pub mod storage;
         }
     }
+    pub mod game;
+    pub mod geometry;
 }
 pub mod game_date {
     pub mod create;
@@ -57,7 +58,6 @@ pub use crate::{
             window::*,
         },
         context::{button::*, context::*, font::*},
-        game::*,
         logic::{
             country::{
                 construction::*,
@@ -67,6 +67,8 @@ pub use crate::{
             date::*,
             logic::*,
         },
+        game::*,
+        geometry::*,
     },
     script::{r#trait::*, rand::*},
     system::{
