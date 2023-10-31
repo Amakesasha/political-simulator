@@ -45,6 +45,13 @@ impl GameS {
             (play, stop, button)
         };
 
-        return (logic, context);
+        let gui = {
+            let button = Vec::new();
+            let window = Vec::new();
+
+            (button, window)
+        };
+
+        return (logic, context, gui);
     }
 }

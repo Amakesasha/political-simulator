@@ -2,7 +2,7 @@ use crate::*;
 
 impl GameS {
     pub fn flow() {
-        let mut display: PistonWindow = WindowSettings::new("Game", [600, 800])
+        let mut display: PistonWindow = WindowSettings::new("Game", [800, 600])
             .exit_on_esc(false)
             .decorated(true)
             .build()

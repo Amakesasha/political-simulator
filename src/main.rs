@@ -69,7 +69,7 @@ pub use crate::{
         },
         game::*,
         geometry::{
-            position::*, size::*, *
+            aabb::*, position::*, size::*, *
         },
     },
     script::{r#trait::*, rand::*},

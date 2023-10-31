@@ -11,10 +11,11 @@ pub type TextureT = Result<
     Option<[f32; 4]>,
 >;
 
+pub type FactsGui = (Vec<FactsGuiButton>, Vec<FactsGuiWindow>);
 
 impl Create for GuiS {
 	type Output = GuiS;
-	type Facts = (DataGuiButton, DataGuiWindow);
+	type Facts = FactsGui;
 
 	fn new(facts: Self::Facts) -> Self::Output {
 		GuiS {
@@ -26,7 +27,7 @@ impl Create for GuiS {
 	fn default() -> Self::Output {
 		GuiS {
 			button: Vec::new(),
-			window:Vec::new(),
-		}
+			window: Vec::new(),
+		} 
 	}
 }

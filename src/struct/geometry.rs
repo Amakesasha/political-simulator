@@ -5,18 +5,20 @@ pub mod aabb {
 
 	#[derive(Debug, Clone)]
 	pub struct AabbS {
-		pub(crate) position: f64,
+		pub(crate) position: PositionS,
 		pub(crate) size: Scale,
 	}
 
+	pub type FactsAabb = (FactsPosition, FactsScale);
+
 	impl Create for AabbS {
 		type Output = AabbS;
-		type Facts = [[f64; 2]; 2];
+		type Facts = FactsAabb;
 
-		fn new(facts: Self::Output) -> Self::Output {
+		fn new(facts: Self::Facts) -> Self::Output {
 			AabbS {
-				position: PositionS::new(facts[0]),
-				size: Scale::new(facts[1]),
+				position: PositionS::new(facts.0),
+				size: Scale::new(facts.1),
 			}
 		}
 
@@ -39,14 +41,16 @@ pub mod position {
 		pub(crate) y: f64,
 	}
 
+	pub type FactsPosition = [f64; 2];
+
 	impl Create for PositionS {
 		type Output = PositionS;
-		type Facts = [f64; 2];
+		type Facts = FactsPosition;
 
-		fn new(facts: Self::Output) -> Self::Output {
+		fn new(facts: Self::Facts) -> Self::Output {
 			PositionS {
-				x: facts.0,
-				y: facts.1,
+				x: facts[0],
+				y: facts[1],
 			}
 		}
 
@@ -68,14 +72,16 @@ pub mod size {
 		pub(crate) height: f64,
 	}
 
+	pub type FactsScale = [f64; 2];
+
 	impl Create for Scale {
 		type Output = Scale;
-		type Facts = [f64; 2];
+		type Facts = FactsScale;
 
-		fn new(facts: Self::Output) -> Self::Output {
+		fn new(facts: Self::Facts) -> Self::Output {
 			Scale {
-				width: facts.0,
-				height: facts.1,
+				width: facts[0],
+				height: facts[1],
 			}
 		}
 

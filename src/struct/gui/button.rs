@@ -7,9 +7,11 @@ pub struct GuiButtonS {
 	pub(crate) texture: TextureT,
 }
 
+pub type FactsGuiButton = (String, FactsAabb, TextureT);
+
 impl Create for GuiButtonS {
 	type Output = GuiButtonS;
-	type Facts = (Stringl, [[f64; 2]; 2], TextureT);
+	type Facts = FactsGuiButton;
 
 	fn new(facts: Self::Facts) -> Self::Output {
 		GuiButtonS {
