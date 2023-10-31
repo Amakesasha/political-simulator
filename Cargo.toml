@@ -1,0 +1,27 @@
+[package]
+name = "game"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crossterm = "0.27.0"
+rand = "0.8.5"
+
+piston = "0.54.0"
+piston_window = "0.130.0"
+
+
+[profile.dev]
+opt-level = 2
+
+[profile.release]
+opt-level = 3
+
+
+[features]
+default = ["draw", "event"]
+
+draw = []
+event = []
