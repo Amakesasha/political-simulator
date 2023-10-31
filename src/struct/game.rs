@@ -6,7 +6,7 @@ pub struct GameS {
     pub(crate) context: ContextS,
     pub(crate) gui: GuiS,
 }
-
+ 
 pub type FactsGame = (FactsLogic, FactsContext, FactsGui);
 
 impl Create for GameS {
