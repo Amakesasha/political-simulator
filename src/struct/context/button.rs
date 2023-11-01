@@ -45,7 +45,7 @@ impl Create for ButtonS {
             d1: Button::Keyboard(Key::D1),
             d2: Button::Keyboard(Key::D2),
             d3: Button::Keyboard(Key::D3),
-            
+
             esc: Button::Keyboard(Key::Escape),
         }
     }

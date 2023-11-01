@@ -2,8 +2,9 @@ extern crate piston;
 
 pub mod r#struct {
     pub mod gui {
-        pub mod gui;
         pub mod button;
+        pub mod gui;
+        pub mod text;
         pub mod window;
     }
     pub mod context {
@@ -34,9 +35,10 @@ pub mod script {
 pub mod system {
     pub mod draw {
         pub mod date;
-        pub mod display;
         pub mod draw;
+        pub mod gui;
         pub mod text;
+        pub mod logic;
     }
     pub mod event;
     pub mod flow;
@@ -52,12 +54,10 @@ pub use std::collections::HashMap;
 pub use crate::{
     game_date::{create::*, text::*},
     r#struct::{
-        gui::{
-            gui::*,
-            button::*,
-            window::*,
-        },
         context::{button::*, context::*, font::*},
+        game::*,
+        geometry::{aabb::*, position::*, size::*, *},
+        gui::{button::*, gui::*, text::*, window::*},
         logic::{
             country::{
                 construction::*,
@@ -67,14 +67,16 @@ pub use crate::{
             date::*,
             logic::*,
         },
-        game::*,
-        geometry::{
-            aabb::*, position::*, size::*, *
-        },
     },
     script::{r#trait::*, rand::*},
     system::{
-        draw::{date::*, display::*, draw::*, text::*},
+        draw::{
+            date::*, 
+            draw::*, 
+            gui::*, 
+            text::*, 
+            logic::*
+        },
         event::*,
         flow::*,
     },

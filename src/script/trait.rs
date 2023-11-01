@@ -22,7 +22,8 @@ pub trait Give {
     type ID;
 
     fn give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<Self::Output>;
-    fn give_mut<'a>(facts: &'a mut Vec<Self::Output>, id: Self::ID) -> Option<&'a mut Self::Output>;
+    fn give_mut<'a>(facts: &'a mut Vec<Self::Output>, id: Self::ID)
+        -> Option<&'a mut Self::Output>;
 }
 
 pub trait Control {

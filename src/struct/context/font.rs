@@ -60,32 +60,32 @@ impl Create for FontS {
     }
 }
 
-impl ContextS {
-    pub fn get_pixel_positions(&mut self, char_0: char) -> CharPixel {
+impl FontS {
+    pub fn get_pixel_positions(&self, char_0: char) -> CharPixel {
         return match char_0 {
             'A'..='Z' => {
-                if let Some(array_pixel) = self.font.big.get(&char_0) {
+                if let Some(array_pixel) = self.big.get(&char_0) {
                     array_pixel.clone()
                 } else {
                     char_pixel_default()
                 }
             }
             'a'..='z' => {
-                if let Some(array_pixel) = self.font.smal.get(&char_0) {
+                if let Some(array_pixel) = self.smal.get(&char_0) {
                     array_pixel.clone()
                 } else {
                     char_pixel_default()
                 }
             }
             '0'..='9' => {
-                if let Some(array_pixel) = self.font.number.get(&char_0) {
+                if let Some(array_pixel) = self.number.get(&char_0) {
                     array_pixel.clone()
                 } else {
                     char_pixel_default()
                 }
             }
             _ if VECTOR_CHAR_WTIS_CHAR.contains(&char_0) => {
-                if let Some(array_pixel) = self.font.char.get(&char_0) {
+                if let Some(array_pixel) = self.char.get(&char_0) {
                     array_pixel.clone()
                 } else {
                     char_pixel_default()

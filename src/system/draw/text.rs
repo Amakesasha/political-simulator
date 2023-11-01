@@ -1,9 +1,9 @@
 use crate::*;
 
-impl ContextS {
+impl FontS {
     #[cfg(feature = "draw")]
-    pub fn draw_text(
-        &mut self,
+    pub fn draw(
+        &self,
         position: [f64; 2],
         size: f64,
         text: String,

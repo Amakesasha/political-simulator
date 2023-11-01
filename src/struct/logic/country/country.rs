@@ -39,7 +39,10 @@ impl Give for CountryS {
         };
     }
 
-    fn give_mut<'a>(facts: &'a mut Vec<Self::Output>, id: Self::ID) -> Option<&'a mut Self::Output> {
+    fn give_mut<'a>(
+        facts: &'a mut Vec<Self::Output>,
+        id: Self::ID,
+    ) -> Option<&'a mut Self::Output> {
         if let Some(index) = facts.iter().position(|country| country.name == id) {
             Some(&mut facts[index])
         } else {

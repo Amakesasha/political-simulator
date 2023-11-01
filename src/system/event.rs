@@ -29,12 +29,13 @@ impl GameS {
             self.context.play_stop[0] = false;
         }
 
-        if let Some(country) = CountryS::give_mut(&mut self.logic.countries, "Country".to_string()) {
+        if let Some(country) = CountryS::give_mut(&mut self.logic.countries, "Country".to_string())
+        {
             match button {
                 _ if button == self.context.button.d1 => country.add_factory_concrete(),
                 _ if button == self.context.button.d2 => country.add_factory_tree(),
                 _ if button == self.context.button.d3 => country.add_factory_iron(),
-                _ => {},
+                _ => {}
             }
         }
     }

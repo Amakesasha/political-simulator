@@ -34,7 +34,6 @@ impl Control for DateS {
     type Facts = ();
 
     fn update(&mut self, _facts: Self::Facts) {
-
         let date = &mut self.date;
         let update = &mut self.update;
 
