@@ -6,7 +6,7 @@ pub struct GuiS {
     pub(crate) window: Vec<GuiWindowS>,
 }
 
-pub type TextureT =[f32; 4];
+pub type TextureT = [f32; 4];
 
 pub type FactsGui = (Vec<FactsGuiButton>, Vec<FactsGuiWindow>);
 

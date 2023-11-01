@@ -1,9 +1,8 @@
 use crate::*;
 
 impl DateS {
-    pub fn draw(&self, size: f64, font: &FontS, display: &mut PistonWindow, event: &Event,) {
+    pub fn draw(&self, size: f64, font: &FontS, display: &mut PistonWindow, event: &Event) {
         if self.draw {
-
             let day = if self.date[0] <= 9 {
                 format!("0{}", self.date[0])
             } else {

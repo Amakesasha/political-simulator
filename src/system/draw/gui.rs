@@ -11,21 +11,19 @@ impl GuiS {
 impl GuiButtonS {
     #[cfg(feature = "draw")]
     pub fn draw(
-        vector: &Vec<GuiButtonS>, 
-        aabb: Option<&AabbS>, 
-        font: &FontS, 
-        display: &mut PistonWindow, 
-        event: &Event
-        ) {
+        vector: &Vec<GuiButtonS>,
+        aabb: Option<&AabbS>,
+        font: &FontS,
+        display: &mut PistonWindow,
+        event: &Event,
+    ) {
         for button in vector {
-
             if button.draw {
                 if let Some(ref aabb) = aabb {
                     texture_draw(&button.aabb, Some(&aabb), button.texture, display, event);
                 } else {
                     texture_draw(&button.aabb, None, button.texture, display, event);
                 }
-
 
                 for text in &button.text {
                     font.draw(
@@ -35,8 +33,8 @@ impl GuiButtonS {
                         ],
                         text.aabb.size.width,
                         text.text.clone(),
-                        display, 
-                        event
+                        display,
+                        event,
                     );
                 }
             }
@@ -47,13 +45,13 @@ impl GuiButtonS {
 impl GuiWindowS {
     #[cfg(feature = "draw")]
     pub fn draw(
-        vector: &Vec<GuiWindowS>, 
-        aabb: Option<AabbS>, 
-        font: &FontS, 
+        vector: &Vec<GuiWindowS>,
+        aabb: Option<AabbS>,
+        font: &FontS,
         display: &mut PistonWindow,
-        event: &Event) {
+        event: &Event,
+    ) {
         for window in vector {
-
             if window.draw {
                 if let Some(ref aabb) = aabb {
                     texture_draw(&window.aabb, Some(aabb), window.texture, display, event);
@@ -70,7 +68,7 @@ impl GuiWindowS {
                         text.aabb.size.width,
                         text.text.clone(),
                         display,
-                        event
+                        event,
                     );
                 }
 
@@ -80,14 +78,13 @@ impl GuiWindowS {
     }
 }
 
-
 pub fn texture_draw(
-    aabb_0: &AabbS, 
-    aabb_1: Option<&AabbS>, 
-    texture: TextureT, 
-    display: &mut PistonWindow, 
-    event: &Event
-    ) {
+    aabb_0: &AabbS,
+    aabb_1: Option<&AabbS>,
+    texture: TextureT,
+    display: &mut PistonWindow,
+    event: &Event,
+) {
     display.draw_2d(event, |context, graphics, _| {
         if let Some(aabb_1) = aabb_1 {
             let aabb = AabbS::aabb_add_aabb(&aabb_0, &aabb_1);

@@ -37,8 +37,8 @@ pub mod system {
         pub mod date;
         pub mod draw;
         pub mod gui;
-        pub mod text;
         pub mod logic;
+        pub mod text;
     }
     pub mod event;
     pub mod flow;
@@ -70,13 +70,7 @@ pub use crate::{
     },
     script::{r#trait::*, rand::*},
     system::{
-        draw::{
-            date::*, 
-            draw::*, 
-            gui::*, 
-            text::*, 
-            logic::*
-        },
+        draw::{date::*, draw::*, gui::*, logic::*, text::*},
         event::*,
         flow::*,
     },
