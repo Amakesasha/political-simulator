@@ -3,7 +3,7 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct StorageS {
     pub(crate) concrete: ResourceS,
-    pub(crate) tree: ResourceS,
+    pub(crate) wood: ResourceS,
     pub(crate) iron: ResourceS,
 }
 
@@ -16,7 +16,7 @@ impl Create for StorageS {
     fn new(facts: Self::Facts) -> Self::Output {
         StorageS {
             concrete: ResourceS::new(facts[0]),
-            tree: ResourceS::new(facts[1]),
+            wood: ResourceS::new(facts[1]),
             iron: ResourceS::new(facts[2]),
         }
     }
@@ -24,7 +24,7 @@ impl Create for StorageS {
     fn default() -> Self::Output {
         StorageS {
             concrete: ResourceS::default(),
-            tree: ResourceS::default(),
+            wood: ResourceS::default(),
             iron: ResourceS::default(),
         }
     }
@@ -35,7 +35,7 @@ impl Control for StorageS {
 
     fn update(&mut self, facts: Self::Facts) {
         self.concrete.update(facts);
-        self.tree.update(facts);
+        self.wood.update(facts);
         self.iron.update(facts);
     }
 }

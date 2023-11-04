@@ -1,17 +1,9 @@
-extern crate piston;
+#![feature(proc_macro_hygiene, decl_macro)]
+
+#[macro_use]
+extern crate rocket;
 
 pub mod r#struct {
-    pub mod gui {
-        pub mod button;
-        pub mod gui;
-        pub mod text;
-        pub mod window;
-    }
-    pub mod context {
-        pub mod button;
-        pub mod context;
-        pub mod font;
-    }
     pub mod logic {
         pub mod date;
         pub mod logic;
@@ -26,21 +18,15 @@ pub mod r#struct {
 }
 pub mod game_date {
     pub mod create;
-    pub mod text;
 }
 pub mod script {
     pub mod rand;
     pub mod r#trait;
 }
 pub mod system {
-    pub mod draw {
-        pub mod date;
-        pub mod draw;
-        pub mod gui;
-        pub mod logic;
-        pub mod text;
+    pub mod web {
+        pub mod start;
     }
-    pub mod event;
     pub mod flow;
 }
 
@@ -48,16 +34,21 @@ fn main() {
     GameS::flow();
 }
 
-pub use piston_window::*;
 pub use std::collections::HashMap;
+pub use std::sync::Mutex;
+
+pub use rocket::config::{Config, Environment};
+pub use rocket::request::{FromParam, FromRequest, Request};
+pub use rocket::response::content::Html;
+pub use rocket::response::Redirect;
+
+pub use lazy_static::lazy_static;
 
 pub use crate::{
-    game_date::{create::*, text::*},
+    game_date::create::*,
     r#struct::{
-        context::{button::*, context::*, font::*},
         game::*,
         geometry::{aabb::*, position::*, size::*, *},
-        gui::{button::*, gui::*, text::*, window::*},
         logic::{
             country::{
                 construction::*,
@@ -69,9 +60,5 @@ pub use crate::{
         },
     },
     script::{r#trait::*, rand::*},
-    system::{
-        draw::{date::*, draw::*, gui::*, logic::*, text::*},
-        event::*,
-        flow::*,
-    },
+    system::{flow::*, web::start::*},
 };

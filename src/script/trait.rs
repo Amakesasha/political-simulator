@@ -2,19 +2,21 @@ pub trait Create {
     type Output;
     type Facts;
 
-    fn new(facts: Self::Facts) -> Self::Output;
+    fn new(facst: Self::Facts) -> Self::Output;
+    fn default() -> Self::Output;
 
+    fn update_create(date: &mut Self::Output, facst: Self::Facts) {
+        *date = Self::new(facst);
+    }
     fn vec_new(vector_facts: Vec<Self::Facts>) -> Vec<Self::Output> {
         let mut vector = Vec::new();
 
-        for facts in vector_facts {
-            vector.push(Self::new(facts));
+        for facst in vector_facts {
+            vector.push(Self::new(facst));
         }
 
         vector
     }
-
-    fn default() -> Self::Output;
 }
 
 pub trait Give {

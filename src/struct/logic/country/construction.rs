@@ -1,48 +1,67 @@
 use crate::*;
 
-impl CountryS {
-    pub fn add_factory_tree(&mut self) {
-        let stor = &mut self.storage;
+#[post("/construction/add_factory_tree")]
+pub fn add_factory_tree() -> Redirect {
+    let mut game = GAME.lock().unwrap();
 
-        if stor.concrete.quantity >= stor.tree.resources_required_for_construction[2]
-            && stor.iron.quantity >= stor.tree.resources_required_for_construction[1]
-            && stor.tree.quantity >= stor.tree.resources_required_for_construction[0]
+    if let Some(coutry) = CountryS::give_mut(&mut game.logic.countries, "Country".to_string()) {
+        let mut stor = &mut coutry.storage;
+
+        if stor.concrete.quantity >= stor.wood.resources_required_for_construction[2]
+            && stor.iron.quantity >= stor.wood.resources_required_for_construction[1]
+            && stor.wood.quantity >= stor.wood.resources_required_for_construction[0]
         {
-            stor.concrete.quantity -= stor.tree.resources_required_for_construction[2];
-            stor.iron.quantity -= stor.tree.resources_required_for_construction[1];
-            stor.tree.quantity -= stor.tree.resources_required_for_construction[0];
+            stor.concrete.quantity -= stor.wood.resources_required_for_construction[2];
+            stor.iron.quantity -= stor.wood.resources_required_for_construction[1];
+            stor.wood.quantity -= stor.wood.resources_required_for_construction[0];
 
-            stor.tree.number_of_factories += 1;
+            stor.wood.number_of_factories += 1;
         }
     }
 
-    pub fn add_factory_iron(&mut self) {
-        let stor = &mut self.storage;
+    Redirect::to("/")
+}
+
+#[post("/construction/add_factory_iron")]
+pub fn add_factory_iron() -> Redirect {
+    let mut game = GAME.lock().unwrap();
+
+    if let Some(coutry) = CountryS::give_mut(&mut game.logic.countries, "Country".to_string()) {
+        let mut stor = &mut coutry.storage;
 
         if stor.concrete.quantity >= stor.iron.resources_required_for_construction[2]
             && stor.iron.quantity >= stor.iron.resources_required_for_construction[1]
-            && stor.tree.quantity >= stor.iron.resources_required_for_construction[0]
+            && stor.wood.quantity >= stor.iron.resources_required_for_construction[0]
         {
             stor.concrete.quantity -= stor.iron.resources_required_for_construction[2];
             stor.iron.quantity -= stor.iron.resources_required_for_construction[1];
-            stor.tree.quantity -= stor.iron.resources_required_for_construction[0];
+            stor.wood.quantity -= stor.iron.resources_required_for_construction[0];
 
             stor.iron.number_of_factories += 1;
         }
     }
 
-    pub fn add_factory_concrete(&mut self) {
-        let stor = &mut self.storage;
+    Redirect::to("/")
+}
+
+#[post("/construction/add_factory_concrete")]
+pub fn add_factory_concrete() -> Redirect {
+    let mut game = GAME.lock().unwrap();
+
+    if let Some(coutry) = CountryS::give_mut(&mut game.logic.countries, "Country".to_string()) {
+        let mut stor = &mut coutry.storage;
 
         if stor.concrete.quantity >= stor.concrete.resources_required_for_construction[2]
             && stor.iron.quantity >= stor.concrete.resources_required_for_construction[1]
-            && stor.tree.quantity >= stor.concrete.resources_required_for_construction[0]
+            && stor.wood.quantity >= stor.concrete.resources_required_for_construction[0]
         {
             stor.concrete.quantity -= stor.concrete.resources_required_for_construction[2];
             stor.iron.quantity -= stor.concrete.resources_required_for_construction[1];
-            stor.tree.quantity -= stor.concrete.resources_required_for_construction[0];
+            stor.wood.quantity -= stor.concrete.resources_required_for_construction[0];
 
             stor.concrete.number_of_factories += 1;
         }
     }
+
+    Redirect::to("/")
 }

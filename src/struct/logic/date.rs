@@ -56,3 +56,25 @@ impl Control for DateS {
         date[2] += update[2];
     }
 }
+
+impl DateS {
+    pub fn date_to_string(&self) -> String {
+        let date = &self.date;
+
+        let point = ".".to_string();
+
+        let day = if date[0] < 9 {
+            format!("0{}", date[0])
+        } else {
+            format!("{}", date[0])
+        };
+
+        let month = if date[1] < 9 {
+            format!("0{}", date[1])
+        } else {
+            format!("{}", date[1])
+        };
+
+        format!("{}{}{}{}{}", day, point, month, point, date[2])
+    }
+}
