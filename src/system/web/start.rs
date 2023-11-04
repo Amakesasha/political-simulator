@@ -1,7 +1,7 @@
 use crate::*;
 
-#[get("/")]
-pub fn start() -> Html<String> {
+#[get("/game")]
+pub fn game() -> Html<String> {
     let mut game = GAME.lock().unwrap();
 
     let add_factory_tree = r#"
@@ -41,25 +41,33 @@ pub fn start() -> Html<String> {
             r#"
             <table>
                 <tr>
-                    <td> Resource </td> <td> Quantity </td> <td> Number of factories </td>
+                    <td> Resource </td> 
+                    <td> Quantity </td> 
+                    <td> Number of factories </td>
+                    <td> Production 1 Plant </td>
                 </tr>
                 <tr>
-                    <td> Concrete </td> <td> {} </td> <td> {} </td>
+                    <td> Concrete </td> <td> {} </td> <td> {} </td> <td> {} </td>
                 </tr>
                 <tr>
-                    <td> Wood </td> <td> {} </td> <td> {} </td>
+                    <td> Wood </td> <td> {} </td> <td> {} </td> <td> {} </td>
                 </tr>
                 <tr>
-                    <td> Iron </td> <td> {} </td> <td> {} </td>
+                    <td> Iron </td> <td> {} </td> <td> {} </td> <td> {} </td>
                 </tr>
             </table>
             "#,
             stor.concrete.quantity,
             stor.concrete.number_of_factories,
+            stor.concrete.production_1_plant,
+
             stor.wood.quantity,
             stor.wood.number_of_factories,
+            stor.wood.production_1_plant,
+
             stor.iron.quantity,
             stor.iron.number_of_factories,
+            stor.iron.production_1_plant,
         )
     };
 

@@ -19,7 +19,7 @@ pub fn add_factory_tree() -> Redirect {
         }
     }
 
-    Redirect::to("/")
+    Redirect::to("/game")
 }
 
 #[post("/construction/add_factory_iron")]
@@ -41,7 +41,7 @@ pub fn add_factory_iron() -> Redirect {
         }
     }
 
-    Redirect::to("/")
+    Redirect::to("/game")
 }
 
 #[post("/construction/add_factory_concrete")]
@@ -63,5 +63,5 @@ pub fn add_factory_concrete() -> Redirect {
         }
     }
 
-    Redirect::to("/")
+    Redirect::to("/game")
 }

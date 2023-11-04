@@ -3,9 +3,9 @@ use crate::*;
 impl GameS {
     pub fn flow() {
         {
-            let mut date = GAME.lock().unwrap();
+            let mut game = GAME_HASH_MAP.lock().unwrap();
 
-            GameS::update_create(&mut date, GameS::give_date());
+            *game = GameS::give_date_hash_map();
         }
 
         println!("Please open this link: http://localhost:8000/");
@@ -21,9 +21,11 @@ impl GameS {
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![
-        start,
+        login,
+        game,
+        check_password_and_name,
         add_factory_tree,
-        /*add_factory_iron,
-        add_factory_concrete*/
+        add_factory_iron,
+        add_factory_concrete
     ]
 }
