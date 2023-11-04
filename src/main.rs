@@ -14,7 +14,6 @@ pub mod r#struct {
         }
     }
     pub mod game;
-    pub mod geometry;
 }
 pub mod game_date {
     pub mod create;
@@ -50,7 +49,6 @@ pub use crate::{
     game_date::create::*,
     r#struct::{
         game::*,
-        geometry::{aabb::*, position::*, size::*, *},
         logic::{
             country::{
                 construction::*,
