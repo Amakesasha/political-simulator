@@ -13,11 +13,11 @@ impl Create for StorageS {
     type Output = StorageS;
     type Facts = FactsStorage;
 
-    fn new(facts: Self::Facts) -> Self::Output {
+    fn new(facts: &Self::Facts) -> Self::Output {
         StorageS {
-            concrete: ResourceS::new(facts[0]),
-            wood: ResourceS::new(facts[1]),
-            iron: ResourceS::new(facts[2]),
+            concrete: ResourceS::new(&facts[0]),
+            wood: ResourceS::new(&facts[1]),
+            iron: ResourceS::new(&facts[2]),
         }
     }
 
@@ -59,7 +59,7 @@ pub mod resource {
         type Output = ResourceS;
         type Facts = FactsResource;
 
-        fn new(facts: Self::Facts) -> Self::Output {
+        fn new(facts: &Self::Facts) -> Self::Output {
             ResourceS {
                 quantity: facts.0,
                 price: facts.1,

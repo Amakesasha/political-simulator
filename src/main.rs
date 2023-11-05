@@ -24,7 +24,7 @@ pub mod script {
 }
 pub mod system {
     pub mod web {
-        pub mod start;
+        pub mod game;
         pub mod login;
     }
     pub mod flow;
@@ -40,7 +40,7 @@ pub use std::sync::Mutex;
 pub use rocket::{
     config::{Config, Environment},
     request::{Form, FromParam, FromRequest, Request},
-    response::{Redirect, content::Html}
+    response::{content::Html, Redirect},
 };
 
 pub use lazy_static::lazy_static;
@@ -61,10 +61,7 @@ pub use crate::{
     },
     script::{r#trait::*, rand::*},
     system::{
-        flow::*, 
-        web::{
-            start::*,
-            login::*,
-        },
+        flow::*,
+        web::{game::*, login::*},
     },
 };

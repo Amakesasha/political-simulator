@@ -1,6 +1,6 @@
 use crate::*;
 
-#[get("/")]
+#[get("/login/window")]
 pub fn login() -> Html<String> {
     let mut game = GAME.lock().unwrap();
 
@@ -81,25 +81,31 @@ pub fn login() -> Html<String> {
 
 #[post("/login/check_password_and_name", data = "<facst>")]
 pub fn check_password_and_name(facst: Form<LoginForm>) -> Redirect {
-	print!("Check Password and Name: {:?} ", facst.0);
+    print!("Check Password and Name: {:?} ", facst.0);
 
-	let mut hash_map = GAME_HASH_MAP.lock().unwrap(); 
+    let mut game = GAME.lock().unwrap();
 
-	if let Some(game) = hash_map.get(&(facst.0.username.clone(), facst.0.password.clone())) {
-		*GAME.lock().unwrap() = game.clone();
+    if let Some(country) = game.logic.countries.get_mut(&facst.0.password.clone()) {
+        if country.name == facst.0.username {
+            game.logic.name_country = facst.0.username;
 
-		println!("True");
+            println!("True");
 
-		Redirect::to("/game")
-	} else {
-		println!("False");
+            Redirect::to("/game")
+        } else {
+            println!("False");
 
-		Redirect::to("/")
-	}
+            Redirect::to("/login/window")
+        }
+    } else {
+        println!("False");
+
+        Redirect::to("/login/window")
+    }
 }
 
 #[derive(Debug, Clone, FromForm)]
 struct LoginForm {
     password: String,
-	username: String,
+    username: String,
 }

@@ -11,7 +11,7 @@ impl Create for GameS {
     type Output = GameS;
     type Facts = FactsGame;
 
-    fn new(facts: Self::Facts) -> Self::Output {
+    fn new(facts: &Self::Facts) -> Self::Output {
         GameS {
             logic: LogicS::new(facts),
         }
@@ -37,7 +37,6 @@ lazy_static! {
 }
 
 lazy_static! {
-    pub static ref GAME_HASH_MAP: Mutex<HashMap<(String, String), GameS>> = Mutex::new(
-        HashMap::new()
-    );
+    pub static ref GAME_HASH_MAP: Mutex<HashMap<(String, String), GameS>> =
+        Mutex::new(HashMap::new());
 }

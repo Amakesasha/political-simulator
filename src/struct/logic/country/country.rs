@@ -12,41 +12,17 @@ impl Create for CountryS {
     type Output = CountryS;
     type Facts = FactsCountry;
 
-    fn new(facts: Self::Facts) -> Self::Output {
+    fn new(facts: &Self::Facts) -> Self::Output {
         CountryS {
-            name: facts.0,
-            storage: StorageS::new(facts.1),
+            name: facts.0.clone(),
+            storage: StorageS::new(&facts.1),
         }
     }
 
     fn default() -> Self::Output {
         CountryS {
-            name: "".to_string(),
+            name: String::new(),
             storage: StorageS::default(),
-        }
-    }
-}
-
-impl Give for CountryS {
-    type Output = CountryS;
-    type ID = String;
-
-    fn give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<Self::Output> {
-        return if let Some(index) = facts.iter().position(|country| country.name == id) {
-            Some(facts[index].clone())
-        } else {
-            None
-        };
-    }
-
-    fn give_mut<'a>(
-        facts: &'a mut Vec<Self::Output>,
-        id: Self::ID,
-    ) -> Option<&'a mut Self::Output> {
-        if let Some(index) = facts.iter().position(|country| country.name == id) {
-            Some(&mut facts[index])
-        } else {
-            None
         }
     }
 }

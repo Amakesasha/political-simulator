@@ -3,26 +3,29 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct LogicS {
     pub(crate) date: DateS,
-    pub(crate) countries: Vec<CountryS>,
+    pub(crate) countries: HashMap<String, CountryS>,
+    pub(crate) name_country: String,
 }
 
-pub type FactsLogic = (FactsDate, Vec<FactsCountry>);
+pub type FactsLogic = (FactsDate, Vec<String>, Vec<FactsCountry>, String);
 
 impl Create for LogicS {
     type Output = LogicS;
     type Facts = FactsLogic;
 
-    fn new(facts: Self::Facts) -> Self::Output {
+    fn new(facts: &Self::Facts) -> Self::Output {
         LogicS {
-            date: DateS::new(facts.0),
-            countries: CountryS::vec_new(facts.1),
+            date: DateS::new(&facts.0),
+            countries: CountryS::hash_map_new(&facts.1, &facts.2),
+            name_country: facts.3.clone(),
         }
     }
 
     fn default() -> Self::Output {
         LogicS {
             date: DateS::default(),
-            countries: Vec::new(),
+            countries: HashMap::new(),
+            name_country: String::new(),
         }
     }
 }
@@ -34,7 +37,7 @@ impl Control for LogicS {
         self.date.update(());
 
         for country in &mut self.countries {
-            country.update(self.date.update);
+            country.1.update(self.date.update);
         }
     }
 }

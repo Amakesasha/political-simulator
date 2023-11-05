@@ -13,7 +13,7 @@ impl Create for DateS {
     type Output = DateS;
     type Facts = FactsDate;
 
-    fn new(facts: Self::Facts) -> Self::Output {
+    fn new(facts: &Self::Facts) -> Self::Output {
         DateS {
             draw: facts.0,
             date: facts.1,
@@ -77,4 +77,13 @@ impl DateS {
 
         format!("{}{}{}{}{}", day, point, month, point, date[2])
     }
+}
+
+#[post("/logic/next_date")]
+pub fn next_date() -> Redirect {
+    let mut game = GAME.lock().unwrap();
+
+    game.update(());
+
+    Redirect::to("/game")
 }
