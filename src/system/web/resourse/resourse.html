@@ -1,0 +1,63 @@
+<style>
+    .bordered-table, .bordered-table td {
+        border: 1px solid black;
+    }
+    .centered-text {
+        text-align: center;
+    }
+</style>
+<table class="bordered-table">
+<tr>
+    <td> Resource </td>
+    <td> Quantity </td>
+    <td> Number of factories </td>
+    <td> Resources Required For Construction </td>
+    <td> Production 1 Plant </td>
+</tr>
+<tr>
+    <td> Concrete </td>
+    <td> {conc_num} </td>
+    <td> {conc_res} </td>
+    <td> 
+        <table>
+            <tr>
+                <td> Concrete: {conc_build_0} </td>
+                <td> Wood: {conc_build_1} </td>
+                <td> Iron: {conc_build_2} </td>
+            </tr>
+        </table> 
+    </td>
+    <td> {conc_prod} </td>
+</tr>
+<tr>
+    <td> Wood </td>
+    <td> {wood_num} </td>
+    <td> {wood_res} </td>
+    <td> 
+        <table>
+            <tr>
+                <td> Concrete: {wood_build_0} </td>
+                <td> Wood: {wood_build_1} </td>
+                <td> Iron: {wood_build_2} </td>
+            </tr>
+        </table> 
+    </td>
+    <td> {wood_prod} </td>
+</tr>
+<tr>
+    <td> Iron </td>
+    <td> {iron_num} </td>
+    <td> {iron_res} </td>
+    <td> 
+        <table>
+            <tr>
+                <td> Concrete: {iron_build_0} </td>
+                <td> Wood: {iron_build_1} </td>
+                <td> Iron: {iron_build_2} </td>
+            </tr>
+        </table> 
+    </td>
+    <td> {iron_prod} </td>
+</tr>
+</table>
+</h6>

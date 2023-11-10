@@ -63,13 +63,13 @@ impl DateS {
 
         let point = ".".to_string();
 
-        let day = if date[0] < 9 {
+        let day = if date[0] < 10 {
             format!("0{}", date[0])
         } else {
             format!("{}", date[0])
         };
 
-        let month = if date[1] < 9 {
+        let month = if date[1] < 10 {
             format!("0{}", date[1])
         } else {
             format!("{}", date[1])

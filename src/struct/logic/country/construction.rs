@@ -1,94 +1,184 @@
-use crate::*;
+pub mod build {
+    use crate::*;
 
-#[post("/construction/add_factory_wood")]
-pub fn add_factory_wood() -> Redirect {
-    let mut game = GAME.lock().unwrap();
+    #[post("/logic/construction/build/build_factory_concrete")]
+    pub fn build_factory_concrete() -> Redirect {
+        let mut game = GAME.lock().unwrap();
 
-    let name = game.logic.name_country.clone();
+        let name = game.logic.name_country.clone();
 
-    if let Some((_, country)) = game
-        .logic
-        .countries
-        .iter_mut()
-        .find(|(_, country)| country.name == name)
-    {
-        let mut stor = &mut country.storage;
-
-        if stor.concrete.quantity >= stor.wood.resources_required_for_construction[2]
-            && stor.iron.quantity >= stor.wood.resources_required_for_construction[1]
-            && stor.wood.quantity >= stor.wood.resources_required_for_construction[0]
+        if let Some((_, country)) = game
+            .logic
+            .countries
+            .iter_mut()
+            .find(|(_, country)| country.name == name)
         {
-            stor.concrete.quantity -= stor.wood.resources_required_for_construction[2];
-            stor.iron.quantity -= stor.wood.resources_required_for_construction[1];
-            stor.wood.quantity -= stor.wood.resources_required_for_construction[0];
+            let mut stor = &mut country.storage;
 
-            stor.wood.number_of_factories += 1;
+            if stor.concrete.quantity >= stor.concrete.resources_required_for_construction[0]
+                && stor.wood.quantity >= stor.concrete.resources_required_for_construction[1]
+                && stor.iron.quantity >= stor.concrete.resources_required_for_construction[2]
+            {
+                stor.concrete.quantity -= stor.concrete.resources_required_for_construction[0];
+                stor.wood.quantity -= stor.concrete.resources_required_for_construction[1];
+                stor.iron.quantity -= stor.concrete.resources_required_for_construction[2];
+
+                stor.concrete.number_of_factories += 1;
+            }
+
+            Redirect::to("/game")
+        } else {
+            Redirect::to("/login/window")
         }
+    }
 
-        Redirect::to("/game")
-    } else {
-        Redirect::to("/login/window")
+    #[post("/logic/construction/build/build_factory_wood")]
+    pub fn build_factory_wood() -> Redirect {
+        let mut game = GAME.lock().unwrap();
+
+        let name = game.logic.name_country.clone();
+
+        if let Some((_, country)) = game
+            .logic
+            .countries
+            .iter_mut()
+            .find(|(_, country)| country.name == name)
+        {
+            let mut stor = &mut country.storage;
+
+            if stor.concrete.quantity >= stor.wood.resources_required_for_construction[0]
+                && stor.wood.quantity >= stor.wood.resources_required_for_construction[1]
+                && stor.iron.quantity >= stor.wood.resources_required_for_construction[2]
+            {
+                stor.concrete.quantity -= stor.wood.resources_required_for_construction[0];
+                stor.wood.quantity -= stor.wood.resources_required_for_construction[1];
+                stor.iron.quantity -= stor.wood.resources_required_for_construction[2];
+
+                stor.wood.number_of_factories += 1;
+            }
+
+            Redirect::to("/game")
+        } else {
+            Redirect::to("/login/window")
+        }
+    }
+
+    #[post("/logic/construction/build/build_factory_iron")]
+    pub fn build_factory_iron() -> Redirect {
+        let mut game = GAME.lock().unwrap();
+
+        let name = game.logic.name_country.clone();
+
+        if let Some((_, country)) = game
+            .logic
+            .countries
+            .iter_mut()
+            .find(|(_, country)| country.name == name)
+        {
+            let mut stor = &mut country.storage;
+
+            if stor.concrete.quantity >= stor.iron.resources_required_for_construction[0]
+                && stor.wood.quantity >= stor.iron.resources_required_for_construction[1]
+                && stor.iron.quantity >= stor.iron.resources_required_for_construction[2]
+            {
+                stor.concrete.quantity -= stor.iron.resources_required_for_construction[0];
+                stor.wood.quantity -= stor.iron.resources_required_for_construction[1];
+                stor.iron.quantity -= stor.iron.resources_required_for_construction[2];
+
+                stor.iron.number_of_factories += 1;
+            }
+
+            Redirect::to("/game")
+        } else {
+            Redirect::to("/login/window")
+        }
     }
 }
 
-#[post("/construction/add_factory_iron")]
-pub fn add_factory_iron() -> Redirect {
-    let mut game = GAME.lock().unwrap();
+pub mod destroy {
+    use crate::*;
 
-    let name = game.logic.name_country.clone();
+    #[post("/logic/construction/destroy/destroy_factory_concrete")]
+    pub fn destroy_factory_concrete() -> Redirect {
+        let mut game = GAME.lock().unwrap();
 
-    if let Some((_, country)) = game
-        .logic
-        .countries
-        .iter_mut()
-        .find(|(_, country)| country.name == name)
-    {
-        let mut stor = &mut country.storage;
+        let name = game.logic.name_country.clone();
 
-        if stor.concrete.quantity >= stor.iron.resources_required_for_construction[2]
-            && stor.iron.quantity >= stor.iron.resources_required_for_construction[1]
-            && stor.wood.quantity >= stor.iron.resources_required_for_construction[0]
+        if let Some((_, country)) = game
+            .logic
+            .countries
+            .iter_mut()
+            .find(|(_, country)| country.name == name)
         {
-            stor.concrete.quantity -= stor.iron.resources_required_for_construction[2];
-            stor.iron.quantity -= stor.iron.resources_required_for_construction[1];
-            stor.wood.quantity -= stor.iron.resources_required_for_construction[0];
+            let mut stor = &mut country.storage;
 
-            stor.iron.number_of_factories += 1;
+            if stor.concrete.number_of_factories > 0 {
+                stor.concrete.number_of_factories -= 1;
+
+                stor.concrete.quantity += stor.concrete.resources_required_for_construction[0] * 0.75;
+                stor.wood.quantity += stor.concrete.resources_required_for_construction[1] * 0.75;
+                stor.iron.quantity += stor.concrete.resources_required_for_construction[2] * 0.75;
+            }
+
+            Redirect::to("/game")
+        } else {
+            Redirect::to("/login/window")
         }
-
-        Redirect::to("/game")
-    } else {
-        Redirect::to("/login/window")
     }
-}
 
-#[post("/construction/add_factory_concrete")]
-pub fn add_factory_concrete() -> Redirect {
-    let mut game = GAME.lock().unwrap();
+    #[post("/logic/construction/destroy/destroy_factory_wood")]
+    pub fn destroy_factory_wood() -> Redirect {
+        let mut game = GAME.lock().unwrap();
 
-    let name = game.logic.name_country.clone();
+        let name = game.logic.name_country.clone();
 
-    if let Some((_, country)) = game
-        .logic
-        .countries
-        .iter_mut()
-        .find(|(_, country)| country.name == name)
-    {
-        let mut stor = &mut country.storage;
+        if let Some((_, country)) = game
+            .logic
+            .countries
+            .iter_mut()
+            .find(|(_, country)| country.name == name)
+        {   
+            let mut stor = &mut country.storage;
 
-        if stor.concrete.quantity >= stor.concrete.resources_required_for_construction[2]
-            && stor.iron.quantity >= stor.concrete.resources_required_for_construction[1]
-            && stor.wood.quantity >= stor.concrete.resources_required_for_construction[0]
-        {
-            stor.concrete.quantity -= stor.concrete.resources_required_for_construction[2];
-            stor.iron.quantity -= stor.concrete.resources_required_for_construction[1];
-            stor.wood.quantity -= stor.concrete.resources_required_for_construction[0];
+            if stor.wood.number_of_factories > 0 {
+                stor.wood.number_of_factories -= 1;
 
-            stor.concrete.number_of_factories += 1;
+                stor.concrete.quantity += stor.wood.resources_required_for_construction[0] * 0.75;
+                stor.wood.quantity += stor.wood.resources_required_for_construction[1] * 0.75;
+                stor.iron.quantity += stor.wood.resources_required_for_construction[2] * 0.75;
+            }
+
+            Redirect::to("/game")
+        } else {
+            Redirect::to("/login/window")
         }
+    }
 
-        Redirect::to("/game")
-    } else {
-        Redirect::to("/login/window")
+    #[post("/logic/construction/destroy/destroy_factory_iron")]
+    pub fn destroy_factory_iron() -> Redirect {
+        let mut game = GAME.lock().unwrap();
+
+        let name = game.logic.name_country.clone();
+
+        if let Some((_, country)) = game
+            .logic
+            .countries
+            .iter_mut()
+            .find(|(_, country)| country.name == name)
+        {   
+            let mut stor = &mut country.storage;
+
+            if stor.iron.number_of_factories > 0 {
+                stor.iron.number_of_factories -= 1;
+
+                stor.concrete.quantity += stor.iron.resources_required_for_construction[0] * 0.75;
+                stor.wood.quantity += stor.iron.resources_required_for_construction[1] * 0.75;
+                stor.iron.quantity += stor.iron.resources_required_for_construction[2] * 0.75;
+            }
+
+            Redirect::to("/game")
+        } else {
+            Redirect::to("/login/window")
+        }
     }
 }

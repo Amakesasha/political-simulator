@@ -25,8 +25,11 @@ pub fn routes() -> Vec<rocket::Route> {
         game,
         check_password_and_name,
         next_date,
-        add_factory_wood,
-        add_factory_iron,
-        add_factory_concrete
+        build_factory_concrete,
+        build_factory_wood,
+        build_factory_iron,
+        destroy_factory_concrete,
+        destroy_factory_wood,
+        destroy_factory_iron,
     ]
 }

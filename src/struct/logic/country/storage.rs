@@ -1,5 +1,12 @@
 use crate::*;
 
+/*
+    Resource Id:
+    0 => Concrete;
+    1 => Wood;
+    2 => Iron;
+*/
+
 #[derive(Debug, Clone)]
 pub struct StorageS {
     pub(crate) concrete: ResourceS,

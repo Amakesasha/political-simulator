@@ -3,6 +3,10 @@
 #[macro_use]
 extern crate rocket;
 
+pub static HTML_RESURSE: &str = include_str!("system/web/resourse/resourse.html");
+
+pub static HTML_LOGIC: &str = include_str!("system/web/login/login.html");
+
 pub mod r#struct {
     pub mod logic {
         pub mod date;
@@ -24,8 +28,12 @@ pub mod script {
 }
 pub mod system {
     pub mod web {
-        pub mod game;
-        pub mod login;
+        pub mod resourse {
+            pub mod resourse;
+        }
+        pub mod login {
+            pub mod login;
+        }
     }
     pub mod flow;
 }
@@ -34,8 +42,12 @@ fn main() {
     GameS::flow();
 }
 
-pub use std::collections::HashMap;
-pub use std::sync::Mutex;
+pub use std::{
+    collections::HashMap,
+    sync::Mutex,
+    io::prelude::*,
+    fs::File,
+};
 
 pub use rocket::{
     config::{Config, Environment},
@@ -51,7 +63,9 @@ pub use crate::{
         game::*,
         logic::{
             country::{
-                construction::*,
+                construction::{
+                    build::*, destroy::*,
+                },
                 country::*,
                 storage::{resource::*, *},
             },
@@ -62,6 +76,9 @@ pub use crate::{
     script::{r#trait::*, rand::*},
     system::{
         flow::*,
-        web::{game::*, login::*},
+        web::{
+            resourse::{resourse::*}, 
+            login::{login::*},
+        },
     },
 };
