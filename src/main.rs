@@ -3,10 +3,6 @@
 #[macro_use]
 extern crate rocket;
 
-pub static HTML_RESURSE: &str = include_str!("system/web/resourse/resourse.html");
-
-pub static HTML_LOGIC: &str = include_str!("system/web/login/login.html");
-
 pub mod r#struct {
     pub mod logic {
         pub mod date;
@@ -17,6 +13,9 @@ pub mod r#struct {
             pub mod storage;
         }
     }
+    /*pub mod web {
+        pub mod web;
+    }*/
     pub mod game;
 }
 pub mod game_date {
@@ -28,11 +27,15 @@ pub mod script {
 }
 pub mod system {
     pub mod web {
+        pub mod web;
         pub mod resourse {
             pub mod resourse;
         }
         pub mod login {
             pub mod login;
+        }
+        pub mod r#main {
+            pub mod r#main;
         }
     }
     pub mod flow;
@@ -42,12 +45,7 @@ fn main() {
     GameS::flow();
 }
 
-pub use std::{
-    collections::HashMap,
-    sync::Mutex,
-    io::prelude::*,
-    fs::File,
-};
+pub use std::{collections::HashMap, fs::File, io::prelude::*, sync::Mutex};
 
 pub use rocket::{
     config::{Config, Environment},
@@ -63,9 +61,7 @@ pub use crate::{
         game::*,
         logic::{
             country::{
-                construction::{
-                    build::*, destroy::*,
-                },
+                construction::{build::*, destroy::*},
                 country::*,
                 storage::{resource::*, *},
             },
@@ -76,9 +72,6 @@ pub use crate::{
     script::{r#trait::*, rand::*},
     system::{
         flow::*,
-        web::{
-            resourse::{resourse::*}, 
-            login::{login::*},
-        },
+        web::{login::login::*, r#main::r#main::*, resourse::resourse::*, web::*},
     },
 };

@@ -8,21 +8,24 @@ impl GameS {
             GameS::update_create(&mut game, GameS::give_date());
         }
 
-        println!("Please open this link: http://localhost:8000/login/window");
+        println!("Please open this link: http://localhost:8000/");
 
         let config = Config::build(Environment::Development)
-            .log_level(rocket::config::LoggingLevel::Off) // Отключить вывод в терминал
+            .log_level(rocket::config::LoggingLevel::Off) 
             .finalize()
             .unwrap();
 
-        rocket::custom(config).mount("/", routes()).launch();
+        rocket::custom(config)
+            .mount("/", routes())
+            .register(catchers![not_found])
+            .launch();
     }
 }
 
 pub fn routes() -> Vec<rocket::Route> {
     routes![
         login,
-        game,
+        resourse,
         check_password_and_name,
         next_date,
         build_factory_concrete,

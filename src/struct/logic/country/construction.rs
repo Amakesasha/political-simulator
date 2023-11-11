@@ -26,7 +26,7 @@ pub mod build {
                 stor.concrete.number_of_factories += 1;
             }
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             Redirect::to("/login/window")
         }
@@ -57,7 +57,7 @@ pub mod build {
                 stor.wood.number_of_factories += 1;
             }
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             Redirect::to("/login/window")
         }
@@ -88,7 +88,7 @@ pub mod build {
                 stor.iron.number_of_factories += 1;
             }
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             Redirect::to("/login/window")
         }
@@ -115,12 +115,13 @@ pub mod destroy {
             if stor.concrete.number_of_factories > 0 {
                 stor.concrete.number_of_factories -= 1;
 
-                stor.concrete.quantity += stor.concrete.resources_required_for_construction[0] * 0.75;
+                stor.concrete.quantity +=
+                    stor.concrete.resources_required_for_construction[0] * 0.75;
                 stor.wood.quantity += stor.concrete.resources_required_for_construction[1] * 0.75;
                 stor.iron.quantity += stor.concrete.resources_required_for_construction[2] * 0.75;
             }
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             Redirect::to("/login/window")
         }
@@ -137,7 +138,7 @@ pub mod destroy {
             .countries
             .iter_mut()
             .find(|(_, country)| country.name == name)
-        {   
+        {
             let mut stor = &mut country.storage;
 
             if stor.wood.number_of_factories > 0 {
@@ -148,7 +149,7 @@ pub mod destroy {
                 stor.iron.quantity += stor.wood.resources_required_for_construction[2] * 0.75;
             }
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             Redirect::to("/login/window")
         }
@@ -165,7 +166,7 @@ pub mod destroy {
             .countries
             .iter_mut()
             .find(|(_, country)| country.name == name)
-        {   
+        {
             let mut stor = &mut country.storage;
 
             if stor.iron.number_of_factories > 0 {
@@ -176,7 +177,7 @@ pub mod destroy {
                 stor.iron.quantity += stor.iron.resources_required_for_construction[2] * 0.75;
             }
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             Redirect::to("/login/window")
         }

@@ -19,7 +19,7 @@ pub fn check_password_and_name(facst: Form<LoginForm>) -> Redirect {
 
             println!("True");
 
-            Redirect::to("/game")
+            Redirect::to("/game/resourse")
         } else {
             println!("False");
 

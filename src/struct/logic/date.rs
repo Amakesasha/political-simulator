@@ -79,11 +79,11 @@ impl DateS {
     }
 }
 
-#[post("/logic/next_date")]
+#[post("/logic/date/next_date")]
 pub fn next_date() -> Redirect {
     let mut game = GAME.lock().unwrap();
 
     game.update(());
 
-    Redirect::to("/game")
+    Redirect::to("/game/resourse")
 }

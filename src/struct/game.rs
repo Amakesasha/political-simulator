@@ -3,9 +3,10 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct GameS {
     pub(crate) logic: LogicS,
+    //pub(crate) web: WebS,
 }
 
-pub type FactsGame = (FactsLogic);
+pub type FactsGame = (FactsLogic); //, FactsWeb);
 
 impl Create for GameS {
     type Output = GameS;
@@ -13,13 +14,15 @@ impl Create for GameS {
 
     fn new(facts: &Self::Facts) -> Self::Output {
         GameS {
-            logic: LogicS::new(facts),
+            logic: LogicS::new(facts), //.0),
+                                       //web: Web::new(facts.1)
         }
     }
 
     fn default() -> Self::Output {
         GameS {
             logic: LogicS::default(),
+            //web: WebS::default(),
         }
     }
 }

@@ -3,10 +3,7 @@ use crate::*;
 impl GameS {
     pub fn give_date() -> FactsGame {
         let logic = {
-            let password = vec![
-                "123456".to_string(),
-                "wasd".to_string()
-            ];
+            let password = vec!["123456".to_string(), "wasd".to_string()];
 
             let country = {
                 let mut vector = Vec::new();
@@ -38,7 +35,7 @@ impl GameS {
 
             let date = (true, [02, 10, 2009], [1, 0, 0]);
 
-            (date, password, country, String::new())
+            (date, password, country, "Country".to_string())
         };
 
         return (logic);
