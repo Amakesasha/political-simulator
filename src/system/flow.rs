@@ -26,13 +26,14 @@ pub fn routes() -> Vec<rocket::Route> {
     routes![
         login,
         resourse,
+        electricity,
         check_password_and_name,
         next_date,
-        build_factory_concrete,
+        /*build_factory_concrete,
         build_factory_wood,
         build_factory_iron,
         destroy_factory_concrete,
         destroy_factory_wood,
-        destroy_factory_iron,
+        destroy_factory_iron,*/
     ]
 }

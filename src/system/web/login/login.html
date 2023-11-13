@@ -5,7 +5,7 @@
         const username = document.getElementById('input1').value;
         const password = document.getElementById('input2').value;
 
-        fetch('/login/check_password_and_name', {
+        fetch('/game/login/check_password_and_name', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -22,8 +22,7 @@
     }
                 
     document.getElementById('button').addEventListener('click', submitForm);
-</script>
-        
+</script>  
 <style>
     .button-container {
         display: flex;
@@ -45,7 +44,7 @@
 </style>
 
 <div class="button-container">
-    <form action="/login/check_password_and_name" method="post">
+    <form action="/game/login/check_password_and_name" method="post">
         <input type="text" id="input1" class="input" name="username" placeholder="UserName", required>
         <input type="text" id="input2" class="input" name="password" placeholder="Password", required>
         <button id="button" class="button">Input</button>

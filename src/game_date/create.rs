@@ -3,6 +3,9 @@ use crate::*;
 impl GameS {
     pub fn give_date() -> FactsGame {
         let logic = {
+            let date = (true, [02, 10, 2009], [1, 0, 0]);
+            let name = String::from("Country");
+
             let password = vec!["123456".to_string(), "wasd".to_string()];
 
             let country = {
@@ -12,9 +15,16 @@ impl GameS {
                     (
                         "Country".to_string(),
                         [
-                            (0.0, 0.0, 10, 5.0, [1000.0, 850.0, 675.0]),
-                            (0.0, 0.0, 5, 2.5, [500.0, 450.0, 250.0]),
-                            (1000.0, 0.0, 0, 1.25, [2500.0, 1250.0, 1000.0]),
+                            (0.0, 0.0, 10, 5.0),
+                            (0.0, 0.0, 5, 2.5),
+                            (0.0, 0.0, 1, 1.25),
+                            (0.0, 0.0, 1, 0.25),
+                        ],
+                        [
+                            (10, 5.0),
+                            (5, 2.5),
+                            (1, 1.25),
+                            (1, 0.25),
                         ],
                     )
                 });
@@ -23,9 +33,16 @@ impl GameS {
                     (
                         "Test".to_string(),
                         [
-                            (0.0, 0.0, 3, 5.0, [1000.0, 850.0, 675.0]),
-                            (0.0, 0.0, 2, 2.5, [500.0, 450.0, 250.0]),
-                            (0.0, 0.0, 1, 1.25, [2500.0, 1250.0, 1000.0]),
+                            (0.0, 0.0, 3, 5.0),
+                            (0.0, 0.0, 2, 2.5),
+                            (0.0, 0.0, 1, 1.25),
+                            (0.0, 0.0, 1, 0.25),
+                        ],
+                        [
+                            (10, 5.0),
+                            (5, 2.5),
+                            (1, 1.25),
+                            (1, 0.25),
                         ],
                     )
                 });
@@ -33,11 +50,30 @@ impl GameS {
                 vector
             };
 
-            let date = (true, [02, 10, 2009], [1, 0, 0]);
+            let resources__for_construction_factory = [
+                [1000.0, 850.0, 675.0, 0.0],
+                [500.0, 450.0, 250.0, 0.0], 
+                [2500.0, 1250.0, 1000.0, 0.0],
+                [7500.0, 3450.0, 2500.0, 0.0],
+            ];
 
-            (date, password, country, "Country".to_string())
+            let resources__for_construction_power_stantion = [
+                [1000.0, 850.0, 675.0, 0.0],
+                [500.0, 450.0, 250.0, 0.0], 
+                [2500.0, 1250.0, 1000.0, 0.0],
+                [7500.0, 3450.0, 2500.0, 0.0],
+            ];
+
+            (
+                date, 
+                name, 
+                password, 
+                country, 
+                resources__for_construction_factory,
+                resources__for_construction_power_stantion
+            )
         };
 
-        return (logic);
+        return logic;
     }
 }

@@ -3,11 +3,15 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct LogicS {
     pub(crate) date: DateS,
-    pub(crate) countries: HashMap<String, CountryS>,
     pub(crate) name_country: String,
+
+    pub(crate) countries: HashMap<String, CountryS>,
+
+    pub(crate) resources_for_construction_factory: [[f64; 4]; 4],
+    pub(crate) resources_for_construction_power_stantion: [[f64; 4]; 4],
 }
 
-pub type FactsLogic = (FactsDate, Vec<String>, Vec<FactsCountry>, String);
+pub type FactsLogic = (FactsDate, String, Vec<String>, Vec<FactsCountry>, [[f64; 4]; 4], [[f64; 4]; 4]);
 
 impl Create for LogicS {
     type Output = LogicS;
@@ -16,16 +20,24 @@ impl Create for LogicS {
     fn new(facts: &Self::Facts) -> Self::Output {
         LogicS {
             date: DateS::new(&facts.0),
-            countries: CountryS::hash_map_new(&facts.1, &facts.2),
-            name_country: facts.3.clone(),
+            name_country: facts.1.clone(),
+
+            countries: CountryS::hash_map_new(&facts.2, &facts.3),
+
+            resources_for_construction_factory: facts.4,
+            resources_for_construction_power_stantion: facts.5,
         }
     }
 
     fn default() -> Self::Output {
         LogicS {
             date: DateS::default(),
-            countries: HashMap::new(),
             name_country: String::new(),
+
+            countries: HashMap::new(),
+            
+            resources_for_construction_factory: [[0.0; 4]; 4],
+            resources_for_construction_power_stantion: [[0.0; 4]; 4]
         }
     }
 }

@@ -1,5 +1,8 @@
 use crate::*;
 
+pub static LINK: &str = "";
+
+pub static HTML_ELECTRICITY: &str = include_str!("electricity/electricity.html");
 pub static HTML_RESURSE: &str = include_str!("resourse/resourse.html");
 
 pub static HTML_LOGIC: &str = include_str!("login/login.html");
@@ -12,26 +15,32 @@ pub fn not_found(req: &Request) -> Html<String> {
     Html(format!("Page {} not found.", path))
 }
 
-/*
-    /login
-        /window                           "get"
-        /check_password_and_name          "post"
+#[derive(Debug, Clone, FromForm)]
+pub struct Message { 
+    pub(crate) a: String 
+}
 
-    /logic
-        /date
-            /next_date                    "post"
-        /construction
-            /build
-                /build_factory_concrete   "post"
-                /build_factory_wood       "post"
-                /build_factory_iron       "post"
-            /destroy
-                /destroy_factory_concrete "post"
-                /destroy_factory_wood     "post"
-                /destroy_factory_iron     "post"
-        /table 
-    
+/*
     /game 
-        /resourse
-        /trade
+        /login
+            /window                           "get"
+            /check_password_and_name          "post"
+
+        /logic
+            /date
+                /next_date                    "post"
+            /construction
+                /build
+                    /build_factory_concrete   "post"
+                    /build_factory_wood       "post"
+                    /build_factory_iron       "post"
+                /destroy
+                    /destroy_factory_concrete "post"
+                    /destroy_factory_wood     "post"
+                    /destroy_factory_iron     "post"
+            /table 
+        
+        /draw
+            /resourse
+            /electricity
 */

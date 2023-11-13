@@ -2,19 +2,16 @@ use crate::*;
 
 /*
     Resource Id:
-    0 => Concrete;
-    1 => Wood;
-    2 => Iron;
+        0 => Concrete;
+        1 => Wood;
+        2 => Iron;
+        3 => Rubber;
 */
 
-#[derive(Debug, Clone)]
-pub struct StorageS {
-    pub(crate) concrete: ResourceS,
-    pub(crate) wood: ResourceS,
-    pub(crate) iron: ResourceS,
-}
+#[derive(Debug, Clone, Copy)]
+pub struct StorageS (pub(crate) [ResourceS; 4]);
 
-pub type FactsStorage = [FactsResource; 3];
+pub type FactsStorage = [FactsResource; 4];
 
 impl Create for StorageS {
     type Output = StorageS;
@@ -22,17 +19,18 @@ impl Create for StorageS {
 
     fn new(facts: &Self::Facts) -> Self::Output {
         StorageS {
-            concrete: ResourceS::new(&facts[0]),
-            wood: ResourceS::new(&facts[1]),
-            iron: ResourceS::new(&facts[2]),
+            0: [
+                ResourceS::new(&facts[0]),
+                ResourceS::new(&facts[1]),
+                ResourceS::new(&facts[2]),
+                ResourceS::new(&facts[3])
+            ]
         }
     }
 
     fn default() -> Self::Output {
         StorageS {
-            concrete: ResourceS::default(),
-            wood: ResourceS::default(),
-            iron: ResourceS::default(),
+            0: [ResourceS::default(); 4]
         }
     }
 }
@@ -41,26 +39,25 @@ impl Control for StorageS {
     type Facts = [usize; 3];
 
     fn update(&mut self, facts: Self::Facts) {
-        self.concrete.update(facts);
-        self.wood.update(facts);
-        self.iron.update(facts);
+        for resource in &mut self.0 {
+            resource.update(facts);
+        }
     }
 }
 
 pub mod resource {
     use crate::*;
 
-    #[derive(Debug, Clone)]
+    #[derive(Debug, Clone, Copy)]
     pub struct ResourceS {
         pub(crate) quantity: f64,
         pub(crate) price: f64,
 
         pub(crate) number_of_factories: usize,
         pub(crate) production_1_plant: f64,
-        pub(crate) resources_required_for_construction: [f64; 3],
     }
 
-    pub type FactsResource = (f64, f64, usize, f64, [f64; 3]);
+    pub type FactsResource = (f64, f64, usize, f64);
 
     impl Create for ResourceS {
         type Output = ResourceS;
@@ -73,7 +70,6 @@ pub mod resource {
 
                 number_of_factories: facts.2,
                 production_1_plant: facts.3,
-                resources_required_for_construction: facts.4,
             }
         }
 
@@ -84,7 +80,6 @@ pub mod resource {
 
                 number_of_factories: 0,
                 production_1_plant: 0.0,
-                resources_required_for_construction: [0.0; 3],
             }
         }
     }

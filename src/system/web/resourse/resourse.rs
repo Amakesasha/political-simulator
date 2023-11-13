@@ -1,7 +1,7 @@
 use crate::*;
 
 impl StorageS {
-    pub fn resourse() -> String {
+    pub fn html_get() -> String {
         let mut game = GAME.lock().unwrap();
 
         let html = {
@@ -11,56 +11,48 @@ impl StorageS {
                 .iter()
                 .find(|(_, country)| country.name == game.logic.name_country)
             {
-                let stor = &country.storage;
+                let stor = &country.storage.0;
 
                 let mut text = HTML_RESURSE;
 
                 let html_with_data = text
-                    .replace("{conc_num}", &stor.concrete.quantity.to_string())
-                    .replace("{conc_res}", &stor.html_from_resurse(0).to_string())
+                    .replace("{conc_num}", &stor[0].quantity.to_string())
+                    .replace("{conc_res}", &country.storage.html_from_resurse(&game, 0))
                     .replace(
-                        "{conc_build_0}",
-                        &stor.concrete.resources_required_for_construction[0].to_string(),
+                        "{conc_table}",
+                        &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
+                    .replace("{conc_prod}", &stor[0].production_1_plant.to_string())
+
+
+
+                    .replace("{wood_num}", &stor[1].quantity.to_string())
+                    .replace("{wood_res}", &country.storage.html_from_resurse(&game, 1))
                     .replace(
-                        "{conc_build_1}",
-                        &stor.concrete.resources_required_for_construction[1].to_string(),
+                        "{wood_table}",
+                        &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
+                    .replace("{wood_prod}", &stor[1].production_1_plant.to_string())
+
+
+
+                    .replace("{iron_num}", &stor[2].quantity.to_string())
+                    .replace("{iron_res}", &country.storage.html_from_resurse(&game, 2))
                     .replace(
-                        "{conc_build_2}",
-                        &stor.concrete.resources_required_for_construction[2].to_string(),
+                        "{iron_table}",
+                        &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
-                    .replace("{conc_prod}", &stor.concrete.production_1_plant.to_string())
-                    .replace("{wood_num}", &stor.wood.quantity.to_string())
-                    .replace("{wood_res}", &stor.html_from_resurse(1).to_string())
+                    .replace("{iron_prod}", &stor[2].production_1_plant.to_string())
+
+
+
+                    .replace("{rubb_num}", &stor[3].quantity.to_string())
+                    .replace("{rubb_res}", &country.storage.html_from_resurse(&game, 3))
                     .replace(
-                        "{wood_build_0}",
-                        &stor.wood.resources_required_for_construction[0].to_string(),
+                        "{rubb_table}",
+                        &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
-                    .replace(
-                        "{wood_build_1}",
-                        &stor.wood.resources_required_for_construction[1].to_string(),
-                    )
-                    .replace(
-                        "{wood_build_2}",
-                        &stor.wood.resources_required_for_construction[2].to_string(),
-                    )
-                    .replace("{wood_prod}", &stor.concrete.production_1_plant.to_string())
-                    .replace("{iron_num}", &stor.iron.quantity.to_string())
-                    .replace("{iron_res}", &stor.html_from_resurse(2).to_string())
-                    .replace(
-                        "{iron_build_0}",
-                        &stor.iron.resources_required_for_construction[0].to_string(),
-                    )
-                    .replace(
-                        "{iron_build_1}",
-                        &stor.iron.resources_required_for_construction[1].to_string(),
-                    )
-                    .replace(
-                        "{iron_build_2}",
-                        &stor.iron.resources_required_for_construction[2].to_string(),
-                    )
-                    .replace("{iron_prod}", &stor.concrete.production_1_plant.to_string());
+                    .replace("{rubb_prod}", &stor[3].production_1_plant.to_string());
 
                 html_with_data
             } else {
@@ -73,58 +65,72 @@ impl StorageS {
         html
     }
 
-    fn html_from_resurse(&self, resourse_id: u8) -> String {
-        let resourse = match resourse_id {
-            0 => &self.concrete,
-            1 => &self.wood,
-            2 => &self.iron,
-            _ => &self.concrete,
+    fn resourse_table(date: [[f64; 4]; 4], resourse_id: usize) -> String {
+        let td_0 = if date[resourse_id][0] > 0.0 {
+            format!("<td> Concrete: {} </td>", date[resourse_id][0])
+        } else {
+            format!("")
         };
 
-        let (color_0, color_1) = {
-            let color_0 = if self.concrete.quantity
-                >= resourse.resources_required_for_construction[0]
-                && self.wood.quantity >= resourse.resources_required_for_construction[1]
-                && self.iron.quantity >= resourse.resources_required_for_construction[2]
-            {
-                format!("#008000")
-            } else {
-                format!("#FF0000")
-            };
-
-            let color_1 = if resourse.number_of_factories > 0 {
-                format!("#008000")
-            } else {
-                format!("#FF0000")
-            };
-
-            (color_0, color_1)
+        let td_1 = if date[resourse_id][1] > 0.0 {
+            format!("<td> Wood: {} </td>", date[resourse_id][1])
+        } else {
+            format!("")
         };
 
-        let date = match resourse_id {
-            0 => (
-                color_0,
-                color_1,
-                resourse.number_of_factories,
-                "concrete",
-                "Concrete",
-            ),
-            1 => (
-                color_0,
-                color_1,
-                resourse.number_of_factories,
-                "wood",
-                "Wood",
-            ),
-            2 => (
-                color_0,
-                color_1,
-                resourse.number_of_factories,
-                "iron",
-                "Iron",
-            ),
-            _ => (color_0, color_1, resourse.number_of_factories, " ", " "),
+        let td_2 = if date[resourse_id][2] > 0.0 {
+            format!("<td> Iron: {} </td>", date[resourse_id][2])
+        } else {
+            format!("")
         };
+
+        let td_3 = if date[resourse_id][3] > 0.0 {
+            format!("<td> Rubber: {} </td>", date[resourse_id][3])
+        } else {
+            format!("")
+        };
+
+        format!(
+            "<tr>
+                {}
+                {}
+                {}
+                {}
+            </tr>",
+            td_0, td_1, td_2, td_3
+        )
+    }
+
+    fn html_from_resurse(&self, game: &GameS, resourse_id: usize) -> String {
+        let stor = &self.0;
+
+        let color_0 = if stor[0].quantity >= game.logic.resources_for_construction_factory[resourse_id][0]
+            && stor[1].quantity >= game.logic.resources_for_construction_factory[resourse_id][1]
+            && stor[2].quantity >= game.logic.resources_for_construction_factory[resourse_id][2]
+        {
+            format!("#008000")
+        } else {
+            format!("#FF0000")
+        };
+
+        let color_1 = if stor[resourse_id].number_of_factories > 0 {
+            format!("#008000")
+        } else {
+            format!("#FF0000")
+        };
+
+        let date = (
+            (color_0, color_1),
+            stor[resourse_id].number_of_factories,
+            match resourse_id {
+                0 => ("concrete", "Concrete"),
+                1 => ("wood", "Wood"),
+                2 => ("iron", "Iron"),
+                3 => ("rubber", "Rubber"),
+                _ => ("_", "_"),
+            }
+            ,
+        );
 
         format!(
             r#"
@@ -162,24 +168,34 @@ impl StorageS {
 
             <script>
                 function sendPostRequest_{resourse_id}_0() {{
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "/logic/construction/build/build_factory_{post}", true);
-                    xhr.send(JSON.stringify({{}}));
+                    const path = location.pathname;
+
+                    fetch('/game/logic/construction/build/build_factory_{post}', {{
+                        method: 'POST',
+                        headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }},
+                        body: new URLSearchParams({{ a: path }})
+                    }})
+                    .then(response => {{}})
+                    .catch(error => {{}});
                 }}
 
                 function sendPostRequest_{resourse_id}_1() {{
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "/logic/construction/destroy/destroy_factory_{post}",true);
-                    xhr.send(JSON.stringify({{}}));
+                    const path = location.pathname;
+
+                    fetch('/game/logic/construction/destroy/destroy_factory_{post}', {{
+                        method: 'POST',
+                        headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }},
+                        body: new URLSearchParams({{ a: path }})
+                    }})
                 }}
             </script>
         "#,
             resourse_id = resourse_id,
-            color_0 = date.0,
-            color_1 = date.1,
-            number_of_factories = date.2,
-            post = date.3,
-            text = date.4,
+            color_0 = date.0.0,
+            color_1 = date.0.1,
+            number_of_factories = date.1,
+            post = date.2.0,
+            text = date.2.1,
         )
     }
 }

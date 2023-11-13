@@ -4,9 +4,10 @@ use crate::*;
 pub struct CountryS {
     pub(crate) name: String,
     pub(crate) storage: StorageS,
+    pub(crate) electricity: ElectricityS,
 }
 
-pub type FactsCountry = (String, FactsStorage);
+pub type FactsCountry = (String, FactsStorage, FactsElectricity);
 
 impl Create for CountryS {
     type Output = CountryS;
@@ -16,6 +17,7 @@ impl Create for CountryS {
         CountryS {
             name: facts.0.clone(),
             storage: StorageS::new(&facts.1),
+            electricity: ElectricityS::new(&facts.2),
         }
     }
 
@@ -23,6 +25,7 @@ impl Create for CountryS {
         CountryS {
             name: String::new(),
             storage: StorageS::default(),
+            electricity: ElectricityS::default(),
         }
     }
 }

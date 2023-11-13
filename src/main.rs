@@ -9,6 +9,7 @@ pub mod r#struct {
         pub mod logic;
         pub mod country {
             pub mod construction;
+            pub mod electricity;
             pub mod country;
             pub mod storage;
         }
@@ -28,6 +29,9 @@ pub mod script {
 pub mod system {
     pub mod web {
         pub mod web;
+        pub mod electricity {
+            pub mod electricity;
+        }
         pub mod resourse {
             pub mod resourse;
         }
@@ -45,7 +49,13 @@ fn main() {
     GameS::flow();
 }
 
-pub use std::{collections::HashMap, fs::File, io::prelude::*, sync::Mutex};
+pub use std::{
+    borrow::Cow,
+    collections::HashMap, 
+    fs::File, 
+    io::prelude::*,
+    sync::Mutex
+};
 
 pub use rocket::{
     config::{Config, Environment},
@@ -62,6 +72,7 @@ pub use crate::{
         logic::{
             country::{
                 construction::{build::*, destroy::*},
+                electricity::{power_station::*, *},
                 country::*,
                 storage::{resource::*, *},
             },
@@ -72,6 +83,12 @@ pub use crate::{
     script::{r#trait::*, rand::*},
     system::{
         flow::*,
-        web::{login::login::*, r#main::r#main::*, resourse::resourse::*, web::*},
+        web::{
+            electricity::electricity::*,
+            login::login::*, 
+            r#main::r#main::*, 
+            resourse::resourse::*, 
+            web::*
+        },
     },
 };

@@ -79,11 +79,13 @@ impl DateS {
     }
 }
 
-#[post("/logic/date/next_date")]
-pub fn next_date() -> Redirect {
+#[post("/game/logic/date/next_date", data = "<facst>")]
+pub fn next_date(facst: Form<Message>) -> Redirect {
     let mut game = GAME.lock().unwrap();
 
     game.update(());
 
-    Redirect::to("/game/resourse")
+    let r = facst.0.a.clone().to_string();
+
+    Redirect::to(r)
 }
