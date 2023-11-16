@@ -8,7 +8,7 @@ impl GameS {
             GameS::update_create(&mut game, GameS::give_date());
         }
 
-        println!("Please open this link: http://localhost:8000/login/window");
+        println!("Please open this link: http://localhost:8000/game/login/window");
 
         let config = Config::build(Environment::Development)
             .log_level(rocket::config::LoggingLevel::Off) 
