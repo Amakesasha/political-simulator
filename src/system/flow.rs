@@ -29,11 +29,22 @@ pub fn routes() -> Vec<rocket::Route> {
         electricity,
         check_password_and_name,
         next_date,
-        /*build_factory_concrete,
+
+
+        update_color_button_build,
+        update_color_button_destroy,
+
+        update_quantity_resourse,
+
+
+        build_factory_concrete,
         build_factory_wood,
         build_factory_iron,
+        build_factory_rubber,
+
         destroy_factory_concrete,
         destroy_factory_wood,
-        destroy_factory_iron,*/
+        destroy_factory_iron,
+        destroy_factory_rubber,
     ]
 }

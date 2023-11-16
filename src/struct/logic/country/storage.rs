@@ -95,4 +95,79 @@ pub mod resource {
             self.quantity += income;
         }
     }
+
+    pub mod web {
+        use crate::*;
+
+        #[put("/game/logic/resourse/update_color_button_build", data = "<facts>")]
+        pub fn update_color_button_build(facts: Form<Message>) -> String {
+            let game = GAME.lock().unwrap();
+
+            if let Some((_, country)) = game
+                .logic
+                .countries
+                .iter()
+                .find(|(_, country)| country.name == game.logic.name_country)
+            {
+                let stor = &country.storage.0;
+
+                let num = facts.0.a.trim().parse::<usize>().unwrap_or(0);
+
+                if stor[0].quantity >= game.logic.resources_for_construction_factory[num][0]
+                    && stor[1].quantity >= game.logic.resources_for_construction_factory[num][1]
+                    && stor[2].quantity >= game.logic.resources_for_construction_factory[num][2]
+                {
+                    format!("#008000")
+                } else {
+                    format!("#FF0000")
+                }
+            } else {
+                format!("#FF0000")
+            }
+        }
+
+        #[put("/game/logic/resourse/update_color_button_destroy", data = "<facts>")]
+        pub fn update_color_button_destroy(facts: Form<Message>) -> String {
+            let game = GAME.lock().unwrap();
+
+            if let Some((_, country)) = game
+                .logic
+                .countries
+                .iter()
+                .find(|(_, country)| country.name == game.logic.name_country)
+            {
+                let stor = &country.storage.0;
+
+                let num = facts.0.a.trim().parse::<usize>().unwrap_or(0);
+
+                if stor[num].number_of_factories > 0 {
+                    format!("#008000")
+                } else {
+                    format!("#FF0000")
+                }
+            } else {
+                format!("#FF0000")
+            }
+        }
+
+        #[put("/game/logic/resourse/update_quantity_resourse", data = "<facts>")]
+        pub fn update_quantity_resourse(facts: Form<Message>) -> String {
+            let game = GAME.lock().unwrap();
+
+            if let Some((_, country)) = game
+                .logic
+                .countries
+                .iter()
+                .find(|(_, country)| country.name == game.logic.name_country)
+            {
+                let stor = &country.storage.0;
+
+                let num = facts.0.a.trim().parse::<usize>().unwrap_or(0);
+
+                format!("{}", stor[num].quantity)
+            } else {
+                format!("0")
+            }
+        }
+    }
 }

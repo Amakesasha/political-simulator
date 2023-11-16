@@ -11,48 +11,48 @@ impl StorageS {
                 .iter()
                 .find(|(_, country)| country.name == game.logic.name_country)
             {
-                let stor = &country.storage.0;
+                let stor = &country.storage;
 
                 let mut text = HTML_RESURSE;
 
                 let html_with_data = text
-                    .replace("{conc_num}", &stor[0].quantity.to_string())
-                    .replace("{conc_res}", &country.storage.html_from_resurse(&game, 0))
+                    .replace("{conc_num}", &stor.html_from_resurse_quantity(0))
+                    .replace("{conc_res}", &stor.html_from_resurse(&game, 0))
                     .replace(
                         "{conc_table}",
                         &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
-                    .replace("{conc_prod}", &stor[0].production_1_plant.to_string())
+                    .replace("{conc_prod}", &stor.0[0].production_1_plant.to_string())
 
 
 
-                    .replace("{wood_num}", &stor[1].quantity.to_string())
-                    .replace("{wood_res}", &country.storage.html_from_resurse(&game, 1))
+                    .replace("{wood_num}", &stor.html_from_resurse_quantity(1))
+                    .replace("{wood_res}", &stor.html_from_resurse(&game, 1))
                     .replace(
                         "{wood_table}",
                         &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
-                    .replace("{wood_prod}", &stor[1].production_1_plant.to_string())
+                    .replace("{wood_prod}", &stor.0[1].production_1_plant.to_string())
 
 
 
-                    .replace("{iron_num}", &stor[2].quantity.to_string())
-                    .replace("{iron_res}", &country.storage.html_from_resurse(&game, 2))
+                    .replace("{iron_num}", &stor.html_from_resurse_quantity(2))
+                    .replace("{iron_res}", &stor.html_from_resurse(&game, 2))
                     .replace(
                         "{iron_table}",
                         &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
-                    .replace("{iron_prod}", &stor[2].production_1_plant.to_string())
+                    .replace("{iron_prod}", &stor.0[2].production_1_plant.to_string())
 
 
 
-                    .replace("{rubb_num}", &stor[3].quantity.to_string())
-                    .replace("{rubb_res}", &country.storage.html_from_resurse(&game, 3))
+                    .replace("{rubb_num}", &stor.html_from_resurse_quantity(3))
+                    .replace("{rubb_res}", &stor.html_from_resurse(&game, 3))
                     .replace(
                         "{rubb_table}",
                         &Self::resourse_table(game.logic.resources_for_construction_factory, 3)
                     )
-                    .replace("{rubb_prod}", &stor[3].production_1_plant.to_string());
+                    .replace("{rubb_prod}", &stor.0[3].production_1_plant.to_string());
 
                 html_with_data
             } else {
@@ -101,6 +101,49 @@ impl StorageS {
         )
     }
 
+    fn html_from_resurse_quantity(&self, resourse_id: usize) -> String {
+        format!(r#"
+            <label for="quantity_resourse_{post}">
+                {quantity} 
+            </label>
+            
+            <script>
+                function update_quantity_resourse_{resourse_id}() {{
+                    fetch('/game/logic/resourse/update_quantity_resourse', {{
+                        method: 'PUT',
+                        headers: {{
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }},
+                        body: new URLSearchParams({{ a: {resourse_id} }}),
+                    }})
+                    .then(response => response.text())
+                    .then(result => {{
+                        let labelElement = document.querySelector('label[for="quantity_resourse_{post}"]');
+
+                        labelElement.innerText = result;
+
+                        setTimeout(update_quantity_resourse_{resourse_id}, 250);
+                    }})
+                    .catch(error => {{
+                        console.error('Error:', error);
+
+                        setTimeout(update_quantity_resourse_{resourse_id}, 250);
+                    }});
+                }}
+            </script> 
+        "#,
+            quantity = self.0[resourse_id].quantity,
+            resourse_id = resourse_id,
+            post = match resourse_id {
+                0 => "concrete",
+                1 => "wood",
+                2 => "iron",
+                3 => "rubber",
+                _ => "_",
+            },
+        )
+    }
+
     fn html_from_resurse(&self, game: &GameS, resourse_id: usize) -> String {
         let stor = &self.0;
 
@@ -135,6 +178,11 @@ impl StorageS {
         format!(
             r#"
             <style>
+                .div1 {{
+                    top: 0;
+                    left: 0;
+                    box-sizing: border-box;
+                }}
                 .{post}-build {{
                     padding: 2px 4px;
                     background-color: {color_0};
@@ -153,7 +201,9 @@ impl StorageS {
                 }}
             </style>
 
-            <label for="{post}-build">{number_of_factories}</label>
+            <label for="number_of_factories_{post}">
+                {number_of_factories} 
+            </label>
             <table>
                 <button id="{post}-build" class="{post}-build" type="button" onclick="sendPostRequest_{resourse_id}_0()">
                     Build Factory {text}
@@ -161,32 +211,95 @@ impl StorageS {
             </table>
             <table>
                 <button id="{post}-destroy" class="{post}-destroy" type="button" onclick="sendPostRequest_{resourse_id}_1()">
-                    Destroy Factory {text}
+                    Destroy Factory {text} 
                 </button>
             </table>
             
+            <script> 
+                function updateColorButtonBuild_{resourse_id}() {{
+                    fetch('/game/logic/resourse/update_color_button_build', {{
+                        method: 'PUT',
+                        headers: {{
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }},
+                        body: new URLSearchParams({{ a: {resourse_id} }}),
+                    }})
+                    .then(response => response.text())
+                    .then(result => {{
+                        const postBuildElement = document.querySelector('.{post}-build');
+
+                        postBuildElement.style.backgroundColor = result;
+
+                        setTimeout(updateColorButtonBuild_{resourse_id}, 250);
+                    }})
+                    .catch(error => {{
+                        console.error('Error:', error);
+
+                        setTimeout(updateColorButtonBuild_{resourse_id}, 250);
+                    }});
+                }}
+
+                function updateColorButtonDestroy_{resourse_id}() {{
+                    fetch('/game/logic/resourse/update_color_button_destroy', {{
+                        method: 'PUT',
+                        headers: {{
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }},
+                        body: new URLSearchParams({{ a: {resourse_id} }}),
+                    }})
+                    .then(response => response.text())
+                    .then(result => {{
+                        const postBuildElement = document.querySelector('.{post}-destroy');
+
+                        postBuildElement.style.backgroundColor = result;
+
+                        setTimeout(updateColorButtonDestroy_{resourse_id}, 250);
+                    }})
+                    .catch(error => {{
+                        console.error('Error:', error);
+
+                        setTimeout(updateColorButtonDestroy_{resourse_id}, 250);
+                    }});
+                }}
+            </script>
 
             <script>
                 function sendPostRequest_{resourse_id}_0() {{
-                    const path = location.pathname;
-
                     fetch('/game/logic/construction/build/build_factory_{post}', {{
-                        method: 'POST',
-                        headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }},
-                        body: new URLSearchParams({{ a: path }})
+                        method: 'PUT',
+                        headers: {{
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }},
+                        body: new URLSearchParams({{  }}),
                     }})
-                    .then(response => {{}})
-                    .catch(error => {{}});
+                    .then(response => response.text())
+                    .then(result => {{
+                        let labelElement = document.querySelector('label[for="number_of_factories_{post}"]');
+
+                        labelElement.innerText = result;
+                    }})
+                    .catch(error => {{
+                        console.error('Error:', error);
+                    }});
                 }}
 
                 function sendPostRequest_{resourse_id}_1() {{
-                    const path = location.pathname;
-
                     fetch('/game/logic/construction/destroy/destroy_factory_{post}', {{
-                        method: 'POST',
-                        headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }},
-                        body: new URLSearchParams({{ a: path }})
+                        method: 'PUT',
+                        headers: {{
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }},
+                        body: new URLSearchParams({{  }}),
                     }})
+                    .then(response => response.text())
+                    .then(result => {{
+                        let labelElement = document.querySelector('label[for="number_of_factories_{post}"]');
+
+                        labelElement.innerText = result;
+                    }})
+                    .catch(error => {{
+                        console.error('Error:', error);
+                    }});
                 }}
             </script>
         "#,

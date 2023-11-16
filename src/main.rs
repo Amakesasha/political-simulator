@@ -74,7 +74,7 @@ pub use crate::{
                 construction::{build::*, destroy::*},
                 electricity::{power_station::*, *},
                 country::*,
-                storage::{resource::*, *},
+                storage::{resource::{web::*, *}, *},
             },
             date::*,
             logic::*,

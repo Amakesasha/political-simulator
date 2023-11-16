@@ -43,27 +43,46 @@ pub fn html_get_main(date: String, navigation_bar: String, main: String) -> Stri
 
                 <script>
                     window.onload = function() {{
-                        setTimeout(performPostRequest, 1000);
+                        performPostRequest(); 
+
+                        updateColorButtonBuild_0()
+                        updateColorButtonDestroy_0();
+
+                        updateColorButtonBuild_1()
+                        updateColorButtonDestroy_1();
+
+                        updateColorButtonBuild_2()
+                        updateColorButtonDestroy_2();
+
+                        updateColorButtonBuild_3()
+                        updateColorButtonDestroy_3();
+
+                        update_quantity_resourse_0();
+                        update_quantity_resourse_1();
+                        update_quantity_resourse_2();
+                        update_quantity_resourse_3();
                     }};
 
                     function performPostRequest() {{
-                        const path = location.pathname;
-
                         fetch('/game/logic/date/next_date', {{
-                            method: 'POST',
-                            headers: {{ 'Content-Type': 'application/x-www-form-urlencoded' }},
-                            body: new URLSearchParams({{ a: path }})
+                            method: 'PUT',
+                            headers: {{
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            }},
+                            body: new URLSearchParams({{  }}),
                         }})
-                        .then(response => {{
-                            function changeText() {{
-                                var element = document.getElementById("myElement");
-                                element.innerHTML = "<strong>Новый текст</strong>";
-                            }}
+                        .then(response => response.text())
+                        .then(result => {{
+                            const Date = document.getElementById('date_text');
 
-                            location.reload(path);
+                            Date.innerText = result;
+
+                            setTimeout(performPostRequest, 1000);
                         }})
                         .catch(error => {{
-                            location.reload(path);
+                            console.error('Error:', error);
+
+                            setTimeout(performPostRequest, 1000);
                         }});
                     }}
                 </script>
@@ -84,7 +103,6 @@ pub fn html_get_main(date: String, navigation_bar: String, main: String) -> Stri
                         width: 150px;
                         height: 350px;
                     }}
-                    
                     #main {{
                         background-color: #FFFFFF;
                         height: 400px;
@@ -97,8 +115,8 @@ pub fn html_get_main(date: String, navigation_bar: String, main: String) -> Stri
                 </style>
             </head>
             <body>
-                <div id="header">
-                    {date}
+                <div id="header"> 
+                    <div  style="border: none;", id="date_text"> {date} </div>
                 </div>
                 <div id="leftSidebar"> 
                     {navigation_bar} 

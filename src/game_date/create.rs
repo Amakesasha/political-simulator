@@ -4,7 +4,7 @@ impl GameS {
     pub fn give_date() -> FactsGame {
         let logic = {
             let date = (true, [02, 10, 2009], [1, 0, 0]);
-            let name = String::from("Country");
+            let name = String::from("");
 
             let password = vec!["123456".to_string(), "wasd".to_string()];
 
