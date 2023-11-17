@@ -6,7 +6,7 @@ impl GameS {
             let date = (true, [02, 10, 2009], [1, 0, 0]);
             let name = String::from("");
 
-            let password = vec!["123456".to_string(), "wasd".to_string()];
+            let password = vec!["123456".to_string(), "wasd".to_string(), "qwerty".to_string()];
 
             let country = {
                 let mut vector = Vec::new();
@@ -37,6 +37,24 @@ impl GameS {
                             (0.0, 0.0, 2, 2.5),
                             (0.0, 0.0, 1, 1.25),
                             (0.0, 0.0, 1, 0.25),
+                        ],
+                        [
+                            (10, 5.0),
+                            (5, 2.5),
+                            (1, 1.25),
+                            (1, 0.25),
+                        ],
+                    )
+                });
+
+                vector.push({
+                    (
+                        "Test_1".to_string(),
+                        [
+                            (50000.0, 0.0, 100, 5.0),
+                            (50000.0, 0.0, 100, 2.5),
+                            (50000.0, 0.0, 100, 1.25),
+                            (500000.0, 0.0, 100, 0.25),
                         ],
                         [
                             (10, 5.0),
