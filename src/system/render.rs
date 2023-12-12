@@ -113,22 +113,29 @@ impl Render {
 
 //
 
+#[cfg(feature = "gui")]
 impl GuiS {
     pub fn render(&self, stdout: &mut Stdout) {
+        #[cfg(feature = "button")]
         for button in &self.button {
             if button.draw {
+                #[cfg(feature = "button")]
                 ButtonS::render(&button, &None, stdout);
             }
         }
 
+        #[cfg(feature = "window")]
         for window in &self.window {
             if window.draw {
+                #[cfg(feature = "window")]
                 WindowS::render(&window, stdout);
             }
         }
 
+        #[cfg(feature = "table")]
         for table in &self.table {
             if table.draw {
+                #[cfg(feature = "table")]
                 TableS::render(&table, stdout);
             }
         }
@@ -179,7 +186,8 @@ impl GuiS {
                 }
             }
         }
-        if let Some(flooded_border) = flooded_border {
+
+        if let Some(_) = flooded_border {
             for q in (y + 1)..(y + height - 1) {
                 for w in (x + 1)..(x + width - 1) {
                     Terminal::teleport_mouse(&[w, q], stdout);
@@ -221,6 +229,7 @@ impl GuiS {
     }
 }
 
+#[cfg(feature = "button")]
 impl ButtonS {
     pub fn render(&self, aabb_0: &Option<AabbS>, stdout: &mut Stdout) {
         let mut aabb = self.aabb;
@@ -231,20 +240,25 @@ impl ButtonS {
 
         Terminal::teleport_mouse(&[aabb.position.x, aabb.position.y], stdout);
 
+        #[cfg(feature = "gui")]
         GuiS::draw_border(&aabb, &self.color, self.flooded_border, stdout);
 
         if let Some(text) = &self.text {
+            #[cfg(feature = "gui")]
             GuiS::draw_text(&text.0, &text.1, &aabb, stdout);
         }
     }
 }
 
+#[cfg(feature = "window")]
 impl WindowS {
     pub fn render(&self, stdout: &mut Stdout) {
         Terminal::teleport_mouse(&[self.aabb.position.x, self.aabb.position.y], stdout);
 
+        #[cfg(feature = "gui")]
         GuiS::draw_border(&self.aabb, &self.color, self.flooded_border, stdout);
 
+        #[cfg(feature = "button")]
         for button in &self.button {
             if button.draw {
                 ButtonS::render(&button, &Some(self.aabb), stdout);
@@ -253,25 +267,39 @@ impl WindowS {
     }
 }
 
+#[cfg(feature = "table")]
 impl TableS {
     pub fn render(&self, stdout: &mut Stdout) {
-        let num_y = self.cells.len();
+        let num_y = if self.cells.len() > 0 {
+            self.cells.len()
+        } else {
+            return;
+        };
 
-        let num_x = if num_y != 0 { self.cells[0].len() } else { 0 };
+        let num_x = if num_y != 0 { self.cells[0].1.len() } else { 0 };
 
         for q in 0..num_y {
-            for w in 0..num_x {
-                let aabb = AabbS::new(&(
-                    [
-                        self.aabb.position.x + w as u16 * self.aabb.size.width + w as u16 * self.indentation,
-                        self.aabb.position.y + q as u16 * self.aabb.size.height + q as u16 * self.indentation,
-                    ],
-                    [self.aabb.size.width, self.aabb.size.height],
-                ));
+            let mut aabb = AabbS::new(&(
+                [
+                    self.position.x + q as u16 * self.cells[q].0.position.x,
+                    self.position.y + q as u16 * self.cells[q].0.position.y,
+                ],
+                [self.cells[q].0.size.width, self.cells[q].0.size.height],
+            ));
 
+            for w in 0..num_x {
+                if w > 0 {
+                    PositionS::add(
+                        &mut aabb.position,
+                        &[Ok(0), Ok(self.cells[q].0.size.height + self.indentation)],
+                    );
+                }
+
+                #[cfg(feature = "gui")]
                 GuiS::draw_border(&aabb, &self.color, self.flooded_border, stdout);
 
-                if let Some(text) = self.cells[q].get(w) {
+                if let Some(text) = self.cells[q].1.get(w) {
+                    #[cfg(feature = "gui")]
                     GuiS::draw_text(&text.0, &text.1, &aabb, stdout);
                 }
             }

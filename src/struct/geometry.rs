@@ -5,10 +5,10 @@ use crate::*;
 #[derive(Debug, Clone, Copy)]
 pub struct AabbS {
     pub(crate) position: PositionS,
-    pub(crate) size: Scale,
+    pub(crate) size: SizeS,
 }
 
-pub type FactsAabb = (FactsPosition, FactsScale);
+pub type FactsAabb = (FactsPosition, FactsSize);
 
 impl Create for AabbS {
     type Output = AabbS;
@@ -17,14 +17,14 @@ impl Create for AabbS {
     fn new(facts: &Self::Facts) -> Self::Output {
         AabbS {
             position: PositionS::new(&facts.0),
-            size: Scale::new(&facts.1),
+            size: SizeS::new(&facts.1),
         }
     }
 
     fn default() -> Self::Output {
         AabbS {
             position: PositionS::default(),
-            size: Scale::default(),
+            size: SizeS::default(),
         }
     }
 }
@@ -36,7 +36,7 @@ impl AabbS {
                 aabb_0.position.x + aabb_1.position.x,
                 aabb_0.position.y + aabb_1.position.y,
             ]),
-            size: Scale::new(&[aabb_1.size.width, aabb_1.size.height]),
+            size: SizeS::new(&[aabb_1.size.width, aabb_1.size.height]),
         }
     }
 }
@@ -67,31 +67,89 @@ impl Create for PositionS {
     }
 }
 
+impl Geometry for PositionS {
+    type Output = PositionS;
+
+    fn add(geometry: &mut Self::Output, data: &[Result<u16, u16>; 2]) {
+        match data[0] {
+            Ok(dat) => geometry.x += dat,
+            Err(dat) => {
+                if geometry.x - dat > 0 {
+                    geometry.x -= dat;
+                }
+            }
+        }
+
+        match data[1] {
+            Ok(dat) => geometry.y += dat,
+            Err(dat) => {
+                if geometry.y - dat > 0 {
+                    geometry.y -= dat;
+                }
+            }
+        }
+    }
+
+    fn change(geometry: &mut Self::Output, data: &[u16; 2]) {
+        geometry.x = data[0];
+        geometry.y = data[1];
+    }
+}
+
 // Size
 
 #[derive(Debug, Clone, Copy)]
-pub struct Scale {
+pub struct SizeS {
     pub(crate) width: u16,
     pub(crate) height: u16,
 }
 
-pub type FactsScale = [u16; 2];
+pub type FactsSize = [u16; 2];
 
-impl Create for Scale {
-    type Output = Scale;
-    type Facts = FactsScale;
+impl Create for SizeS {
+    type Output = SizeS;
+    type Facts = FactsSize;
 
     fn new(facts: &Self::Facts) -> Self::Output {
-        Scale {
+        SizeS {
             width: facts[0],
             height: facts[1],
         }
     }
 
     fn default() -> Self::Output {
-        Scale {
+        SizeS {
             width: 0,
             height: 0,
         }
+    }
+}
+
+impl Geometry for SizeS {
+    type Output = SizeS;
+
+    fn add(geometry: &mut Self::Output, data: &[Result<u16, u16>; 2]) {
+        match data[0] {
+            Ok(dat) => geometry.width += dat,
+            Err(dat) => {
+                if geometry.width - dat > 0 {
+                    geometry.width -= dat;
+                }
+            }
+        }
+
+        match data[1] {
+            Ok(dat) => geometry.height += dat,
+            Err(dat) => {
+                if geometry.height - dat > 0 {
+                    geometry.height -= dat;
+                }
+            }
+        }
+    }
+
+    fn change(geometry: &mut Self::Output, data: &[u16; 2]) {
+        geometry.width = data[0];
+        geometry.height = data[1];
     }
 }

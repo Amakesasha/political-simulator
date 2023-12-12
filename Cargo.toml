@@ -1,6 +1,6 @@
 [package]
 name = "game_terminal"
-version = "0.1.0"
+version = "0.5.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -21,7 +21,14 @@ opt-level = 3
 
 
 [features]
-default = []
+default = ["gui", "window", "button", "table"]
 
 draw = []
 event = []
+gui = []
+
+aabb = []
+
+button = []
+window = []
+table = []

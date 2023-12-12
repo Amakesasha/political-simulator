@@ -28,9 +28,9 @@ impl Flow {
 
     pub fn render(game: &GameS, stdout: &mut Stdout) {
         unsafe {
+            #[cfg(feature = "gui")]
             if !GR {
                 Terminal::clean(stdout);
-
                 GuiS::render(&game.gui, stdout);
 
                 GR = true;
@@ -45,10 +45,11 @@ impl Flow {
         {
             match code {
                 KeyCode::Esc => {
-                    Terminal::on_off(false, false, stdout);
+                    Terminal::on_off(false, true, stdout);
 
                     process::exit(0);
                 }
+                #[cfg(feature = "gui")]
                 KeyCode::Tab => unsafe {
                     GR = false;
                 },
@@ -59,15 +60,18 @@ impl Flow {
 
             if let Some(path) = PathS::vector_give(&game.gui.path, code) {
                 match &path.name {
-                    Ok(name) => {
-                        if let Some(button) = ButtonS::vector_give(&gui.button, name.clone()) {
+                    Ok(name_0) => {
+                        #[cfg(feature = "button")]
+                        if let Some(button) = ButtonS::vector_give(&gui.button, name_0.clone()) {
                             ActionE::check_action(game, &button.action);
                         }
                     }
-                    Err(name) => {
-                        if let Some(window) = WindowS::vector_give(&gui.window, name[0].clone()) {
+                    Err(name_1) => {
+                        #[cfg(feature = "window")]
+                        if let Some(window) = WindowS::vector_give(&gui.window, name_1[0].clone()) {
+                            #[cfg(feature = "button")]
                             if let Some(button) =
-                                ButtonS::vector_give(&window.button, name[1].clone())
+                                ButtonS::vector_give(&window.button, name_1[1].clone())
                             {
                                 ActionE::check_action(game, &button.action);
                             }
@@ -79,21 +83,24 @@ impl Flow {
     }
 }
 
+#[cfg(feature = "button")]
 impl ActionE {
     pub fn check_action(game: &mut GameS, action_vector: &Vec<ActionE>) {
         for action in action_vector {
             match action {
+                #[cfg(feature = "button")]
                 ActionE::OpenButton(action) => match action {
                     GuiActionE::OpenAllClose(meaning) => {
-                        ButtonS::open_all_close(&mut game.gui.button, &meaning);
+                        ButtonS::open_all_close(&mut game.gui.button, &meaning)
                     }
                     GuiActionE::OpenRestClose(name, meaning) => {
-                        ButtonS::open_rest_close(&mut game.gui.button, &name, &meaning);
+                        ButtonS::open_rest_close(&mut game.gui.button, &name, &meaning)
                     }
                     GuiActionE::OpenOneClose(name, meaning) => {
-                        ButtonS::open_one_close(&mut game.gui.button, &name, &meaning);
+                        ButtonS::open_one_close(&mut game.gui.button, &name, &meaning)
                     }
                 },
+                #[cfg(feature = "window")]
                 ActionE::OpenWindow(action) => match action {
                     GuiActionE::OpenAllClose(meaning) => {
                         WindowS::open_all_close(&mut game.gui.window, &meaning);
@@ -105,6 +112,7 @@ impl ActionE {
                         WindowS::open_one_close(&mut game.gui.window, &name, &meaning);
                     }
                 },
+                #[cfg(feature = "table")]
                 ActionE::OpenTable(action) => match action {
                     GuiActionE::OpenAllClose(meaning) => {
                         TableS::open_all_close(&mut game.gui.table, &meaning);
@@ -116,8 +124,8 @@ impl ActionE {
                         TableS::open_one_close(&mut game.gui.table, &name, &meaning);
                     }
                 },
-                ActionE::StartFunction(name) => {}
-                ActionE::Non => {}
+                ActionE::StartFunction(name) => {},
+                _ => {}
             }
         }
     }

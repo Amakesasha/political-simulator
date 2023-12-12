@@ -117,6 +117,7 @@ pub mod gui {
         }
     }
 
+    #[cfg(feature = "button")]
     impl ButtonS {
         pub fn give_date() -> Vec<FactsButton> {
             let mut vector = Vec::new();
@@ -141,6 +142,16 @@ pub mod gui {
         }
     }
 
+    #[cfg(not(feature = "button"))]
+    impl ButtonS {
+        pub fn give_date() -> Vec<FactsButton> {
+            Vec::new()
+        }
+    }
+
+    //
+
+    #[cfg(feature = "window")]
     impl WindowS {
         pub fn give_date() -> Vec<FactsWindow> {
             let mut vector = Vec::new();
@@ -295,6 +306,16 @@ pub mod gui {
         }
     }
 
+    #[cfg(not(feature = "window"))]
+    impl WindowS {
+        pub fn give_date() -> Vec<FactsWindow> {
+            Vec::new()
+        }
+    }
+
+    //
+
+    #[cfg(feature = "table")]
     impl TableS {
         pub fn give_date() -> Vec<FactsTable> {
             let mut vector = Vec::new();
@@ -303,34 +324,68 @@ pub mod gui {
                 (
                     String::from("resourse"),
                     true,
-                    ([29, 13], [10, 5]),
+                    [29, 13],
                     Some(true),
                     [Color::Cyan, Color::Black],
                     1,
                     vec![
-                        vec![
-                            (String::from("QQ"), [Color::White, Color::Black]), 
-                            (String::from("WW"), [Color::White, Color::Black]),  
-                            (String::from("EE"), [Color::White, Color::Black]), 
-                            (String::from("QQ"), [Color::White, Color::Black]), 
-                        ],
-                        vec![
-                            (String::from("AA"), [Color::White, Color::Black]),  
-                            (String::from("SS"), [Color::White, Color::Black]), 
-                            (String::from("DD"), [Color::White, Color::Black]),
-                            (String::from("QQ"), [Color::White, Color::Black]),  
-                        ],
-                        vec![
-                            (String::from("ZZ"), [Color::White, Color::Black]),
-                            (String::from("XX"), [Color::White, Color::Black]),  
-                            (String::from("CC"), [Color::White, Color::Black]), 
-
-                        ],
+                        (
+                            ([0, 0], [13, 5]),
+                            vec![
+                                (String::from("\n Resourse "), [Color::White, Color::Black]),
+                                (String::from("AA"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                (String::from("\n Resourse "), [Color::White, Color::Black]),
+                                (String::from("AA"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                (String::from("\n Resourse "), [Color::White, Color::Black]),
+                                (String::from("AA"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                (String::from("\n Resourse "), [Color::White, Color::Black]),
+                                (String::from("AA"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                (String::from("\n Resourse "), [Color::White, Color::Black]),
+                                (String::from("AA"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                                (String::from("ZZ"), [Color::White, Color::Black]),
+                            ],
+                        )
                     ],
                 )
             });
 
             vector
+        }
+    }
+
+    #[cfg(not(feature = "table"))]
+    impl TableS {
+        pub fn give_date() -> Vec<FactsTable> {
+            Vec::new()
         }
     }
 

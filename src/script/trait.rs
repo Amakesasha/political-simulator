@@ -77,3 +77,10 @@ pub trait Gui {
 
     fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool);
 }
+
+pub trait Geometry {
+    type Output;
+
+    fn add(geometry: &mut Self::Output, data: &[Result<u16, u16>; 2]);
+    fn change(geometry: &mut Self::Output, data: &[u16; 2]);
+}
