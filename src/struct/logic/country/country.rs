@@ -66,8 +66,8 @@ impl Give for CountryS {
 impl Control for CountryS {
     type Facts = DateS;
 
-    fn update(&mut self, facts: Self::Facts) {
-        self.storage[0].update(facts);
-        self.storage[1].update(facts);
+    fn update(&mut self, facts: &Self::Facts) {
+        self.storage[0].update(&facts);
+        self.storage[1].update(&facts);
     }
 }

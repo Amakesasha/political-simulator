@@ -13,6 +13,7 @@ pub mod gui {
         #[cfg(feature = "table")]
         pub(crate) table: Vec<TableS>,
         pub(crate) path: Vec<PathS>,
+        pub(crate) gui_render: GuiRenderS,
     }
 
     pub type FactsGui = (
@@ -20,9 +21,8 @@ pub mod gui {
         Vec<FactsWindow>,
         Vec<FactsTable>,
         Vec<FactsPath>,
+        FactsGuiRender,
     );
-
-    pub static mut GR: bool = false;
 
     impl Create for GuiS {
         type Output = GuiS;
@@ -37,6 +37,7 @@ pub mod gui {
                 #[cfg(feature = "table")]
                 table: TableS::vec_new(&facts.2),
                 path: PathS::vec_new(&facts.3),
+                gui_render: GuiRenderS::new(&facts.4),
             }
         }
 
@@ -49,6 +50,26 @@ pub mod gui {
                 #[cfg(feature = "table")]
                 table: Vec::new(),
                 path: Vec::new(),
+                gui_render: GuiRenderS::default()
+            }
+        }
+    }
+
+    impl Control for GuiS {
+        type Facts = LogicS;
+
+        fn update(&mut self, facts: &Self::Facts) {
+            if let Some(country) = CountryS::hashmap_give(&facts.countries, facts.name_country[0].clone()) {
+                if let Some(table) =
+                    TableS::vector_give_mut(&mut self.table, String::from("resourse"))
+                {
+                    if table.draw {
+                        table.update(&vec![(
+                            [1, 1],
+                            format!("{}", country.storage[0].0[0].quantity),
+                        )]);
+                    }
+                }
             }
         }
     }
@@ -59,7 +80,7 @@ pub mod gui {
     use crate::*;
 
     #[derive(Debug, Clone)]
-    pub struct GuiS { }
+    pub struct GuiS {}
 
     pub type FactsGui = ();
 }
@@ -221,8 +242,8 @@ pub mod button {
     #[derive(Debug, Clone)]
     pub enum GuiActionE {
         OpenAllClose(bool),
-        OpenRestClose(String, bool,),
-        OpenOneClose(String, bool,),
+        OpenRestClose(String, bool),
+        OpenOneClose(String, bool),
     }
 
     //
@@ -238,7 +259,7 @@ pub mod button {
 
         pub(crate) button: Option<KeyCode>,
         pub(crate) action: Vec<ActionE>,
-        pub(crate) text: Option<(String, [Color; 2],)>,
+        pub(crate) text: Option<([Color; 2], String)>,
     }
 
     pub type FactsButton = (
@@ -249,7 +270,7 @@ pub mod button {
         [Color; 2],
         Option<KeyCode>,
         Vec<ActionE>,
-        Option<(String, [Color; 2],)>,
+        Option<([Color; 2], String)>,
     );
 
     impl Default for &ButtonS {
@@ -355,6 +376,14 @@ pub mod button {
             }
         }
     }
+
+    impl Control for ButtonS {
+        type Facts = Option<([Color; 2], String)>;
+
+        fn update(&mut self, facts: &Self::Facts) {
+            self.text = facts.clone();
+        }
+    }
 }
 
 #[cfg(not(feature = "button"))]
@@ -381,7 +410,7 @@ pub mod table {
         pub(crate) color: [Color; 2],
 
         pub(crate) indentation: u16,
-        pub(crate) cells: Vec<(AabbS, Vec<(String, [Color; 2],)>)>,
+        pub(crate) cells: Vec<(AabbS, Vec<([Color; 2], String)>)>,
     }
 
     pub type FactsTable = (
@@ -391,7 +420,7 @@ pub mod table {
         Option<bool>,
         [Color; 2],
         u16,
-        Vec<(FactsAabb, Vec<(String, [Color; 2],)>)>,
+        Vec<(FactsAabb, Vec<([Color; 2], String)>)>,
     );
 
     impl Default for &TableS {
@@ -419,7 +448,7 @@ pub mod table {
                     let mut vector = Vec::new();
 
                     for i in &facts.6 {
-                        vector.push((AabbS::new(&i.0), i.1.clone()));
+                        vector.push((AabbS::new(&i.0), i.1.clone(), ));
                     }
 
                     vector
@@ -501,6 +530,20 @@ pub mod table {
             }
         }
     }
+
+    impl Control for TableS {
+        type Facts = Vec<([usize; 2], String)>;
+
+        fn update(&mut self, facts: &Self::Facts) {
+            for data in facts {
+                if let Some(line) = self.cells.get_mut(data.0[1]) {
+                    if let Some(cell) = line.1.get_mut(data.0[0]) {
+                        cell.1 = data.1.clone();
+                    }
+                }
+            }
+        }
+    }
 }
 
 #[cfg(not(feature = "table"))]
@@ -578,6 +621,60 @@ pub mod path {
                 .iter_mut()
                 .find(|(_, data)| data.code == id)
                 .map(|(_, data)| data)
+        }
+    }
+}
+
+//
+
+pub mod gui_render {
+    use crate::*;
+
+    #[derive(Debug, Clone)]
+    pub struct GuiRenderS {
+        pub(crate) gui: bool,
+        pub(crate) window: bool,
+        pub(crate) button: bool,
+        pub(crate) table: bool,
+    }
+
+    pub type FactsGuiRender = [bool; 4];
+
+    impl Create for GuiRenderS {
+        type Output = GuiRenderS;
+        type Facts = FactsGuiRender;
+
+        fn new(facts: &Self::Facts) -> Self::Output {
+            GuiRenderS {
+                gui: facts[0],
+                window: facts[1],
+                button: facts[2],
+                table: facts[3],
+            }
+        }
+
+        fn default() -> Self::Output {
+            GuiRenderS {
+                gui: true,
+                window: true,
+                button: true,
+                table: true,
+            }
+        }
+    }
+
+    impl GuiRenderS {
+        pub fn gui_up(&mut self, result: &bool) {
+            self.gui = *result;
+        }
+        pub fn window_up(&mut self, result: &bool) {
+            self.window = *result;
+        }
+        pub fn button_up(&mut self, result: &bool) {
+            self.button = *result;
+        }
+        pub fn table_up(&mut self, result: &bool) {
+            self.table = *result;
         }
     }
 }

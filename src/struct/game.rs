@@ -33,8 +33,8 @@ impl Create for GameS {
 impl Control for GameS {
     type Facts = ();
 
-    fn update(&mut self, _facts: Self::Facts) {
-        self.logic.update(());
+    fn update(&mut self, _facts: &Self::Facts) {
+        self.logic.update(&());
     }
 }
 

@@ -21,13 +21,16 @@ opt-level = 3
 
 
 [features]
-default = ["gui", "window", "button", "table"]
+default = ["render", "gui", "window", "button", "table"]
 
 draw = []
 event = []
-gui = []
 
-aabb = []
+render = []
+
+
+
+gui = []
 
 button = []
 window = []

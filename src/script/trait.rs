@@ -65,7 +65,7 @@ pub trait Give {
 pub trait Control {
     type Facts;
 
-    fn update(&mut self, facts: Self::Facts);
+    fn update(&mut self, facts: &Self::Facts);
 }
 
 pub trait Gui {

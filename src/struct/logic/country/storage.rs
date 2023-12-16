@@ -38,9 +38,9 @@ impl Create for StorageS {
 impl Control for StorageS {
     type Facts = DateS;
 
-    fn update(&mut self, facts: Self::Facts) {
+    fn update(&mut self, facts: &Self::Facts) {
         for resource in &mut self.0 {
-            resource.update(facts);
+            resource.update(&facts);
         }
     }
 }
@@ -86,7 +86,7 @@ impl Create for ResourceS {
 impl Control for ResourceS {
     type Facts = DateS;
 
-    fn update(&mut self, facts: Self::Facts) {
+    fn update(&mut self, facts: &Self::Facts) {
         let factor = (facts.date[0] + (facts.date[1] * 30) + (facts.date[2] * 360)) as f64;
 
         let income = self.number_of_factory as f64 * self.production_1_factory * factor;

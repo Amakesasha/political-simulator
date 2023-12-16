@@ -33,7 +33,7 @@ impl Create for DateS {
 impl Control for DateS {
     type Facts = ();
 
-    fn update(&mut self, _facts: Self::Facts) {
+    fn update(&mut self, _facts: &Self::Facts) {
         let date = &mut self.date;
         let update = &mut self.update;
 
@@ -81,7 +81,7 @@ impl DateS {
 
 impl DateS {
     pub async fn next_date(game: &mut GameS) -> String {
-        game.update(());
+        game.update(&());
 
         game.logic.date.date_to_string()
     }

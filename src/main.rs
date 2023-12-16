@@ -44,11 +44,13 @@ pub use crossterm::{
 };
 
 pub use std::{
+    cell::Cell,
     collections::HashMap,
     env,
     io::{stdout, Stdout, Write},
     process,
     process::Command,
+    sync::{Arc, RwLock},
     thread,
     time::{Duration, Instant},
 };
@@ -59,7 +61,7 @@ pub use game_date::create::{gui::*, logic::*, *};
 pub use r#struct::{
     game::*,
     geometry::*,
-    gui::{button::*, gui::*, path::*, table::*, window::*},
+    gui::{gui::*, window::*, button::*, table::*, path::*, gui_render::*},
     logic::{
         country::{control::*, country::*, storage::*},
         date::*,

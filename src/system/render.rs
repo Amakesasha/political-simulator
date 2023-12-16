@@ -41,10 +41,25 @@ impl ColorR {
     }
 }
 
+#[cfg(feature = "render")]
+impl Flow {
+    pub fn render(game: &mut GameS, stdout: &mut Stdout) {
+        #[cfg(feature = "gui")]
+        GuiS::render(&mut game.gui, stdout);
+    }
+
+    pub fn update_render(game: &GameS, stdout: &mut Stdout) {
+        //if let Some(table) = facts.iter_mut().find(|data| data.code == id) {}
+    }
+}
+
+#[cfg(feature = "render")]
 pub struct Render;
 
-type Object = Vec<Vec<(char, [Color; 2])>>;
+#[cfg(feature = "render")]
+type Object = Vec<Vec<(char, [Color; 2], )>>;
 
+#[cfg(feature = "render")]
 impl Render {
     pub fn draw_object(object: &Object, posit: &[u16; 2], stdout: &mut Stdout) {
         Terminal::teleport_mouse(posit, stdout);
@@ -83,6 +98,7 @@ impl Render {
     }
 }
 
+#[cfg(feature = "render")]
 impl Render {
     pub fn enter(color: &[Option<Color>; 2], number: usize, stdout: &mut Stdout) {
         let color = ColorR::check_2_color(color);
@@ -115,29 +131,47 @@ impl Render {
 
 #[cfg(feature = "gui")]
 impl GuiS {
-    pub fn render(&self, stdout: &mut Stdout) {
+    pub fn render(&mut self, stdout: &mut Stdout) {
+        let gr = &mut self.gui_render;
+
+        if !gr.button && !gr.window && !gr.table {
+            Terminal::clean(stdout);
+        }
+
         #[cfg(feature = "button")]
-        for button in &self.button {
-            if button.draw {
-                #[cfg(feature = "button")]
-                ButtonS::render(&button, &None, stdout);
+        if !gr.button {
+            for button in &self.button {
+                if button.draw {
+                    #[cfg(feature = "button")]
+                    ButtonS::render(&button, &None, stdout);
+                }
             }
+
+            gr.button = true;
         }
 
         #[cfg(feature = "window")]
-        for window in &self.window {
-            if window.draw {
-                #[cfg(feature = "window")]
-                WindowS::render(&window, stdout);
+        if !gr.window {
+            for window in &self.window {
+                if window.draw {
+                    #[cfg(feature = "window")]
+                    WindowS::render(&window, stdout);
+                }
             }
+
+            gr.window = true;
         }
 
         #[cfg(feature = "table")]
-        for table in &self.table {
-            if table.draw {
-                #[cfg(feature = "table")]
-                TableS::render(&table, stdout);
+        if !self.gui_render.table {
+            for table in &self.table {
+                if table.draw {
+                    #[cfg(feature = "table")]
+                    TableS::render(&table, stdout);
+                }
             }
+
+            self.gui_render.table = true;
         }
     }
 
@@ -245,7 +279,7 @@ impl ButtonS {
 
         if let Some(text) = &self.text {
             #[cfg(feature = "gui")]
-            GuiS::draw_text(&text.0, &text.1, &aabb, stdout);
+            GuiS::draw_text(&text.1, &text.0, &aabb, stdout);
         }
     }
 }
@@ -300,7 +334,7 @@ impl TableS {
 
                 if let Some(text) = self.cells[q].1.get(w) {
                     #[cfg(feature = "gui")]
-                    GuiS::draw_text(&text.0, &text.1, &aabb, stdout);
+                    GuiS::draw_text(&text.1, &text.0, &aabb, stdout);
                 }
             }
         }
