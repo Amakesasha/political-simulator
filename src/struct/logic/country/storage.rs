@@ -87,7 +87,7 @@ impl Control for ResourceS {
     type Facts = DateS;
 
     fn update(&mut self, facts: &Self::Facts) {
-        let factor = (facts.date[0] + (facts.date[1] * 30) + (facts.date[2] * 360)) as f64;
+        let factor = (facts.update[0] + (facts.update[1] * 30) + (facts.update[2] * 360)) as f64;
 
         let income = self.number_of_factory as f64 * self.production_1_factory * factor;
 

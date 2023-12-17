@@ -46,19 +46,26 @@ pub trait Give {
     type Output;
     type ID;
 
-    fn vector_give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<&Self::Output>;
+    fn vector_give<'a>(
+        facts: &'a Vec<Self::Output>,
+        id: &'a Self::ID
+    ) -> Option<&'a Self::Output>;
 
     fn vector_give_mut<'a>(
         facts: &'a mut Vec<Self::Output>,
-        id: Self::ID,
+        id: &Self::ID,
     ) -> Option<&'a mut Self::Output>;
 
-    fn hashmap_give(facts: &HashMap<Self::ID, Self::Output>, id: Self::ID)
-        -> Option<&Self::Output>;
+    fn hashmap_give<'a>(
+        facts: &'a HashMap<Self::ID, Self::Output>, 
+        id: &'a Self::ID, 
+        num: bool
+    ) -> Option<&'a Self::Output>;
 
     fn hashmap_give_mut<'a>(
         facts: &'a mut HashMap<Self::ID, Self::Output>,
-        id: Self::ID,
+        id: &Self::ID,
+        num: bool
     ) -> Option<&'a mut Self::Output>;
 }
 

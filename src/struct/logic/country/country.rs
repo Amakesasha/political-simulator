@@ -31,35 +31,54 @@ impl Give for CountryS {
     type Output = CountryS;
     type ID = String;
 
-    fn vector_give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<&Self::Output> {
-        facts.iter().find(|data| data.name == id)
+    fn vector_give<'a>(
+        facts: &'a Vec<Self::Output>, 
+        id: &'a Self::ID
+    ) -> Option<&'a Self::Output> {
+        facts.iter().find(|data| &data.name == id)
     }
 
     fn vector_give_mut<'a>(
         facts: &'a mut Vec<Self::Output>,
-        id: Self::ID,
+        id: &Self::ID,
     ) -> Option<&'a mut Self::Output> {
-        facts.iter_mut().find(|data| data.name == id)
+        facts.iter_mut().find(|data| &data.name == id)
     }
 
-    fn hashmap_give(
-        facts: &HashMap<Self::ID, Self::Output>,
-        id: Self::ID,
-    ) -> Option<&Self::Output> {
-        facts
-            .iter()
-            .find(|(_, data)| data.name == id)
-            .map(|(_, data)| data)
+    fn hashmap_give<'a>(
+        facts: &'a HashMap<Self::ID, Self::Output>,
+        id: &'a Self::ID,
+        num: bool
+    ) -> Option<&'a Self::Output> {
+        return if num {
+            facts
+                .iter()
+                .find(|(_, data)| &data.name == id)
+                .map(|(_, data)| data)
+        } else {
+            facts
+                .iter()
+                .find(|(data, _)| *data == id)
+                .map(|(_, data)| data)
+        }
     }
 
     fn hashmap_give_mut<'a>(
         facts: &'a mut HashMap<Self::ID, Self::Output>,
-        id: Self::ID,
+        id: &Self::ID,
+        num: bool
     ) -> Option<&'a mut Self::Output> {
-        facts
-            .iter_mut()
-            .find(|(_, data)| data.name == id)
-            .map(|(_, data)| data)
+        return if num {
+            facts
+                .iter_mut()
+                .find(|(_, data)| &data.name == id)
+                .map(|(_, data)| data)
+        } else {
+            facts
+                .iter_mut()
+                .find(|(data, _)| *data == id)
+                .map(|(_, data)| data)
+        }
     }
 }
 

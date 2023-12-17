@@ -126,4 +126,17 @@ impl Terminal {
     pub fn clean(stdout: &mut Stdout) {
         execute!(stdout, Clear(ClearType::All)).error();
     }
+
+
+    /*pub fn clean_coordinates(aabb: &AabbS, stdout: &mut Stdout) {
+        execute!(stdout, SetBackgroundColor(Color::Black)).unwrap();
+
+        for i in aabb.position.y..=aabb.size.width { 
+            Terminal::teleport_mouse();
+
+            queue!(stdout, Print(" ".repeat(8)), ResetColor).unwrap(); 
+        }
+
+        stdout.flush().unwrap();
+    }*/
 }

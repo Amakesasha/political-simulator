@@ -35,6 +35,7 @@ impl Control for GameS {
 
     fn update(&mut self, _facts: &Self::Facts) {
         self.logic.update(&());
+        self.gui.update(&self.logic);
     }
 }
 

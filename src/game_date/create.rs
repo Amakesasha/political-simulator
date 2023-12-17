@@ -175,11 +175,11 @@ pub mod gui {
                                 [Color::Cyan, Color::Black],
                                 Some(KeyCode::Char('1')),
                                 vec![
+                                ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
                                     ActionE::OpenWindow(GuiActionE::OpenOneClose(
                                         String::from("resourse"),
                                         true,
                                     )),
-                                    ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
                                     ActionE::OpenTable(GuiActionE::OpenOneClose(
                                         String::from("resourse"),
                                         true,
@@ -201,11 +201,11 @@ pub mod gui {
                                 [Color::Cyan, Color::Black],
                                 Some(KeyCode::Char('2')),
                                 vec![
+                                    ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
                                     ActionE::OpenWindow(GuiActionE::OpenOneClose(
                                         String::from("electricity"),
                                         true,
                                     )),
-                                    ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
                                     ActionE::OpenTable(GuiActionE::OpenOneClose(
                                         String::from("electricity"),
                                         true,
@@ -391,6 +391,65 @@ pub mod gui {
                 )
             });
 
+            vector.push({
+                (
+                    String::from("electricity"),
+                    false,
+                    [29, 13],
+                    Some(true),
+                    [Color::Magenta, Color::Black],
+                    1,
+                    vec![
+                        (
+                            ([0, 0], [13, 5]),
+                            vec![
+                                ([Color::White, Color::Black], String::from("\n Resourse ")),
+                                ([Color::White, Color::Black], String::from("\n ")),
+                                ([Color::White, Color::Black], String::from("\n ")),
+                                ([Color::White, Color::Black], String::from("\n ")),
+                                ([Color::White, Color::Black], String::from("\n ")),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                ([Color::White, Color::Black], String::from("\n Quantity ")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                ([Color::White, Color::Black], String::from("\n Quantity ")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                ([Color::White, Color::Black], String::from("\n Quantity ")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                            ],
+                        ),
+                        (
+                            ([14, 0], [13, 5]),
+                            vec![
+                                ([Color::White, Color::Black], String::from("\n Quantity ")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                                ([Color::White, Color::Black], String::from("\n")),
+                            ],
+                        ),
+                    ],
+                )
+            });
+
             vector
         }
     }
@@ -411,7 +470,7 @@ pub mod gui {
             vector.push({
                 (
                     KeyCode::Char('1'),
-                    Err([String::from("main"), String::from("resourse")]),
+                    Err([String::from("navigation_bar"), String::from("resourse")]),
                 )
             });
 

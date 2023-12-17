@@ -15,6 +15,8 @@ impl Flow {
             let now_render = Instant::now();
             let elapsed_render = now_render.duration_since(last_output_time_render);
 
+            let mut last_output_time = Instant::now();
+
             if elapsed_render >= Duration::from_millis(1000) {
                 #[cfg(feature = "render")]
                 Flow::render(&mut game, stdout);
@@ -22,12 +24,15 @@ impl Flow {
                 last_output_time_render = now_render;
             }
 
+            Terminal::teleport_mouse(&[0, 50], stdout);
+            println!("{:?}", Instant::now().duration_since(last_output_time));
+
             let now_update = Instant::now();
             let elapsed_update = now_update.duration_since(last_output_time_update);
 
             if elapsed_update >= Duration::from_millis(1000) {
                 #[cfg(feature = "render")]
-                game.gui.update(&game.logic);
+                game.update(&());
 
                 last_output_time_update = now_update;
             }
@@ -50,7 +55,7 @@ impl Flow {
                     process::exit(0);
                 }
                 #[cfg(feature = "gui")]
-                KeyCode::Tab => unsafe {
+                KeyCode::Tab => {
                     game.gui.gui_render.gui_up(&false);
                 },
                 _ => {}
@@ -60,12 +65,12 @@ impl Flow {
             let gui = game.gui.clone();
 
             #[cfg(feature = "gui")]
-            if let Some(path) = PathS::vector_give(&game.gui.path, code) {
+            if let Some(path) = PathS::vector_give(&gui.path, &code) {
                 match &path.name {
 
                     Ok(name_0) => {
                         #[cfg(feature = "button")]
-                        if let Some(button) = ButtonS::vector_give(&gui.button, name_0.clone()) {
+                        if let Some(button) = ButtonS::vector_give(&gui.button, &name_0) {
                             if button.button == Some(code) {
                                 ActionE::check_action(game, &button.action);
                             }
@@ -73,10 +78,10 @@ impl Flow {
                     }
                     Err(name_1) => {
                         #[cfg(feature = "window")]
-                        if let Some(window) = WindowS::vector_give(&gui.window, name_1[0].clone()) {
+                        if let Some(window) = WindowS::vector_give(&gui.window, &name_1[0]) {
                             #[cfg(feature = "button")]
                             if let Some(button) =
-                                ButtonS::vector_give(&window.button, name_1[1].clone())
+                                ButtonS::vector_give(&window.button, &name_1[1])
                             {
                                 if button.button == Some(code) {
                                     ActionE::check_action(game, &button.action);
@@ -93,9 +98,18 @@ impl Flow {
 #[cfg(feature = "button")]
 impl ActionE {
     pub fn check_action(game: &mut GameS, action_vector: &Vec<ActionE>) {
-        for action in action_vector {
-            println!("!");
+        unsafe {
+            static mut STATIC: bool = false;
 
+            if STATIC {
+                STATIC = false;
+            } else {
+                STATIC = true;
+
+                return;
+            }
+        }
+        for action in action_vector {
             match action {
                 #[cfg(feature = "button")]
                 ActionE::OpenButton(action) => {

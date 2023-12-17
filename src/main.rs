@@ -36,7 +36,7 @@ pub use crossterm::{
     cursor::{self, Hide, MoveDown, MoveLeft, MoveRight, MoveTo, MoveUp, Show},
     event::{self, Event, KeyCode, KeyEvent, KeyModifiers},
     execute, queue,
-    style::{Color, ResetColor, SetBackgroundColor, SetForegroundColor},
+    style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     terminal::{
         self, disable_raw_mode, enable_raw_mode, Clear, ClearType, EnterAlternateScreen,
         LeaveAlternateScreen, SetSize,

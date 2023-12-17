@@ -59,15 +59,31 @@ pub mod gui {
         type Facts = LogicS;
 
         fn update(&mut self, facts: &Self::Facts) {
-            if let Some(country) = CountryS::hashmap_give(&facts.countries, facts.name_country[0].clone()) {
+            if let Some(country) = CountryS::hashmap_give(&facts.countries, &facts.name_country[1], true) {
+                #[cfg(feature = "table")]
                 if let Some(table) =
-                    TableS::vector_give_mut(&mut self.table, String::from("resourse"))
+                    TableS::vector_give_mut(&mut self.table, &String::from("resourse"))
                 {
                     if table.draw {
                         table.update(&vec![(
                             [1, 1],
-                            format!("{}", country.storage[0].0[0].quantity),
+                            format!("\n  {}", country.storage[0].0[0].quantity),
                         )]);
+                        table.update(&vec![(
+                            [1, 2],
+                            format!("\n  {}", country.storage[0].0[1].quantity),
+                        )]);
+                        table.update(&vec![(
+                            [1, 3],
+                            format!("\n  {}", country.storage[0].0[2].quantity),
+                        )]);
+                        table.update(&vec![(
+                            [1, 4],
+                            format!("\n  {}", country.storage[0].0[3].quantity),
+                        )]);
+
+
+                        self.gui_render.table_up(&false);
                     }
                 }
             }
@@ -157,35 +173,54 @@ pub mod window {
         type Output = WindowS;
         type ID = String;
 
-        fn vector_give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<&Self::Output> {
-            facts.iter().find(|data| data.name == id)
+        fn vector_give<'a>(
+            facts: &'a Vec<Self::Output>, 
+            id: &'a Self::ID
+        ) -> Option<&'a Self::Output> {
+            facts.iter().find(|data| &data.name == id)
         }
 
         fn vector_give_mut<'a>(
             facts: &'a mut Vec<Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
         ) -> Option<&'a mut Self::Output> {
-            facts.iter_mut().find(|data| data.name == id)
+            facts.iter_mut().find(|data| &data.name == id)
         }
 
-        fn hashmap_give(
-            facts: &HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
-        ) -> Option<&Self::Output> {
-            facts
-                .iter()
-                .find(|(_, data)| data.name == id)
-                .map(|(_, data)| data)
+        fn hashmap_give<'a>(
+            facts: &'a HashMap<Self::ID, Self::Output>,
+            id: &'a Self::ID,
+            num: bool
+        ) -> Option<&'a Self::Output> {
+            return if num {
+                facts
+                    .iter()
+                    .find(|(_, data)| &data.name == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
+            num: bool
         ) -> Option<&'a mut Self::Output> {
-            facts
-                .iter_mut()
-                .find(|(_, data)| data.name == id)
-                .map(|(_, data)| data)
+            return if num {
+                facts
+                    .iter_mut()
+                    .find(|(_, data)| &data.name == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter_mut()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
     }
 
@@ -201,13 +236,13 @@ pub mod window {
         fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
             WindowS::open_all_close(vec, &!meaning);
 
-            if let Some(window) = WindowS::vector_give_mut(vec, name.to_string()) {
+            if let Some(window) = WindowS::vector_give_mut(vec, name) {
                 window.draw = *meaning;
             }
         }
 
         fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
-            if let Some(window) = WindowS::vector_give_mut(vec, name.to_string()) {
+            if let Some(window) = WindowS::vector_give_mut(vec, name) {
                 window.draw = *meaning;
             }
         }
@@ -321,35 +356,54 @@ pub mod button {
         type Output = ButtonS;
         type ID = String;
 
-        fn vector_give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<&Self::Output> {
-            facts.iter().find(|data| data.name == id)
+        fn vector_give<'a>(
+            facts: &'a Vec<Self::Output>, 
+            id: &'a Self::ID
+        ) -> Option<&'a Self::Output> {
+            facts.iter().find(|data| &data.name == id)
         }
 
         fn vector_give_mut<'a>(
             facts: &'a mut Vec<Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
         ) -> Option<&'a mut Self::Output> {
-            facts.iter_mut().find(|data| data.name == id)
+            facts.iter_mut().find(|data| &data.name == id)
         }
 
-        fn hashmap_give(
-            facts: &HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
-        ) -> Option<&Self::Output> {
-            facts
-                .iter()
-                .find(|(_, data)| data.name == id)
-                .map(|(_, data)| data)
+        fn hashmap_give<'a>(
+            facts: &'a HashMap<Self::ID, Self::Output>,
+            id: &'a Self::ID,
+            num: bool
+        ) -> Option<&'a Self::Output> {
+            return if num {
+                facts
+                    .iter()
+                    .find(|(_, data)| &data.name == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
+            num: bool
         ) -> Option<&'a mut Self::Output> {
-            facts
-                .iter_mut()
-                .find(|(_, data)| data.name == id)
-                .map(|(_, data)| data)
+            return if num {
+                facts
+                    .iter_mut()
+                    .find(|(_, data)| &data.name == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter_mut()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
     }
 
@@ -365,13 +419,13 @@ pub mod button {
         fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
             ButtonS::open_all_close(vec, &!meaning);
 
-            if let Some(button) = ButtonS::vector_give_mut(vec, name.to_string()) {
+            if let Some(button) = ButtonS::vector_give_mut(vec, name) {
                 button.draw = *meaning;
             }
         }
 
         fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
-            if let Some(button) = ButtonS::vector_give_mut(vec, name.to_string()) {
+            if let Some(button) = ButtonS::vector_give_mut(vec, name) {
                 button.draw = *meaning;
             }
         }
@@ -475,35 +529,54 @@ pub mod table {
         type Output = TableS;
         type ID = String;
 
-        fn vector_give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<&Self::Output> {
-            facts.iter().find(|data| data.name == id)
+        fn vector_give<'a>(
+            facts: &'a Vec<Self::Output>, 
+            id: &'a Self::ID
+        ) -> Option<&'a Self::Output> {
+            facts.iter().find(|data| &data.name == id)
         }
 
         fn vector_give_mut<'a>(
             facts: &'a mut Vec<Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
         ) -> Option<&'a mut Self::Output> {
-            facts.iter_mut().find(|data| data.name == id)
+            facts.iter_mut().find(|data| &data.name == id)
         }
 
-        fn hashmap_give(
-            facts: &HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
-        ) -> Option<&Self::Output> {
-            facts
-                .iter()
-                .find(|(_, data)| data.name == id)
-                .map(|(_, data)| data)
+        fn hashmap_give<'a>(
+            facts: &'a HashMap<Self::ID, Self::Output>,
+            id: &'a Self::ID,
+            num: bool
+        ) -> Option<&'a Self::Output> {
+            return if num {
+                facts
+                    .iter()
+                    .find(|(_, data)| &data.name == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
+            num: bool
         ) -> Option<&'a mut Self::Output> {
-            facts
-                .iter_mut()
-                .find(|(_, data)| data.name == id)
-                .map(|(_, data)| data)
+            return if num {
+                facts
+                    .iter_mut()
+                    .find(|(_, data)| &data.name == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter_mut()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
     }
 
@@ -519,13 +592,13 @@ pub mod table {
         fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
             TableS::open_all_close(vec, &!meaning);
 
-            if let Some(table) = TableS::vector_give_mut(vec, name.to_string()) {
+            if let Some(table) = TableS::vector_give_mut(vec, name) {
                 table.draw = *meaning;
             }
         }
 
         fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
-            if let Some(table) = TableS::vector_give_mut(vec, name.to_string()) {
+            if let Some(table) = TableS::vector_give_mut(vec, name) {
                 table.draw = *meaning;
             }
         }
@@ -536,8 +609,8 @@ pub mod table {
 
         fn update(&mut self, facts: &Self::Facts) {
             for data in facts {
-                if let Some(line) = self.cells.get_mut(data.0[1]) {
-                    if let Some(cell) = line.1.get_mut(data.0[0]) {
+                if let Some(line) = self.cells.get_mut(data.0[0]) {
+                    if let Some(cell) = line.1.get_mut(data.0[1]) {
                         cell.1 = data.1.clone();
                     }
                 }
@@ -592,35 +665,54 @@ pub mod path {
         type Output = PathS;
         type ID = KeyCode;
 
-        fn vector_give(facts: &Vec<Self::Output>, id: Self::ID) -> Option<&Self::Output> {
-            facts.iter().find(|data| data.code == id)
+        fn vector_give<'a>(
+            facts: &'a Vec<Self::Output>, 
+            id: &'a Self::ID
+        ) -> Option<&'a Self::Output> {
+            facts.iter().find(|data| &data.code == id)
         }
 
         fn vector_give_mut<'a>(
             facts: &'a mut Vec<Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
         ) -> Option<&'a mut Self::Output> {
-            facts.iter_mut().find(|data| data.code == id)
+            facts.iter_mut().find(|data| &data.code == id)
         }
 
-        fn hashmap_give(
-            facts: &HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
-        ) -> Option<&Self::Output> {
-            facts
-                .iter()
-                .find(|(_, data)| data.code == id)
-                .map(|(_, data)| data)
+        fn hashmap_give<'a>(
+            facts: &'a HashMap<Self::ID, Self::Output>,
+            id: &'a Self::ID,
+            num: bool
+        ) -> Option<&'a Self::Output> {
+            return if num {
+                facts
+                    .iter()
+                    .find(|(_, data)| &data.code == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
-            id: Self::ID,
+            id: &Self::ID,
+            num: bool
         ) -> Option<&'a mut Self::Output> {
-            facts
-                .iter_mut()
-                .find(|(_, data)| data.code == id)
-                .map(|(_, data)| data)
+            return if num {
+                facts
+                    .iter_mut()
+                    .find(|(_, data)| &data.code == id)
+                    .map(|(_, data)| data)
+            } else {
+                facts
+                    .iter_mut()
+                    .find(|(data, _)| *data == id)
+                    .map(|(_, data)| data)
+            }
         }
     }
 }

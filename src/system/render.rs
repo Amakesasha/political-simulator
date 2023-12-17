@@ -47,10 +47,6 @@ impl Flow {
         #[cfg(feature = "gui")]
         GuiS::render(&mut game.gui, stdout);
     }
-
-    pub fn update_render(game: &GameS, stdout: &mut Stdout) {
-        //if let Some(table) = facts.iter_mut().find(|data| data.code == id) {}
-    }
 }
 
 #[cfg(feature = "render")]
@@ -86,8 +82,8 @@ impl Render {
         execute!(stdout, SetBackgroundColor(color[1])).error();
 
         match text {
-            Ok(text) => println!("{}", text),
-            Err(text) => print!("{}", text),
+            Ok(text) => queue!(stdout, Print(text.to_owned() + "\n")).error(),
+            Err(text) => queue!(stdout, Print(text)).error(),
         }
 
         execute!(stdout, ResetColor).error();
@@ -100,28 +96,24 @@ impl Render {
 
 #[cfg(feature = "render")]
 impl Render {
-    pub fn enter(color: &[Option<Color>; 2], number: usize, stdout: &mut Stdout) {
+    pub fn enter(color: &[Option<Color>; 2], number: u16, stdout: &mut Stdout) {
         let color = ColorR::check_2_color(color);
 
         execute!(stdout, SetForegroundColor(color[0])).error();
         execute!(stdout, SetBackgroundColor(color[1])).error();
 
-        for _ in 0..number {
-            print!("\n");
-        }
+        queue!(stdout, Print("\n".repeat(number as usize))).error(); 
 
         execute!(stdout, ResetColor).error();
     }
 
-    pub fn space(color: &[Option<Color>; 2], number: usize, stdout: &mut Stdout) {
+    pub fn space(color: &[Option<Color>; 2], number: u16, stdout: &mut Stdout) {
         let color = ColorR::check_2_color(color);
 
         execute!(stdout, SetForegroundColor(color[0])).error();
         execute!(stdout, SetBackgroundColor(color[1])).error();
 
-        for _ in 0..number {
-            print!(" ");
-        }
+        queue!(stdout, Print(" ".repeat(number as usize))).error(); 
 
         execute!(stdout, ResetColor).error();
     }
@@ -134,12 +126,12 @@ impl GuiS {
     pub fn render(&mut self, stdout: &mut Stdout) {
         let gr = &mut self.gui_render;
 
-        if !gr.button && !gr.window && !gr.table {
+        if !gr.gui || !gr.gui && !gr.window && !gr.table {
             Terminal::clean(stdout);
         }
 
         #[cfg(feature = "button")]
-        if !gr.button {
+        if !gr.button || !gr.gui {
             for button in &self.button {
                 if button.draw {
                     #[cfg(feature = "button")]
@@ -151,7 +143,7 @@ impl GuiS {
         }
 
         #[cfg(feature = "window")]
-        if !gr.window {
+        if !gr.window || !gr.gui {
             for window in &self.window {
                 if window.draw {
                     #[cfg(feature = "window")]
@@ -163,7 +155,7 @@ impl GuiS {
         }
 
         #[cfg(feature = "table")]
-        if !self.gui_render.table {
+        if !gr.table || !gr.gui {
             for table in &self.table {
                 if table.draw {
                     #[cfg(feature = "table")]
@@ -171,7 +163,59 @@ impl GuiS {
                 }
             }
 
-            self.gui_render.table = true;
+            gr.table = true;
+        }
+
+        if gr.window && gr.button && gr.table {
+            gr.gui = true;
+        }
+    }
+
+    pub fn udate_render(&mut self, stdout: &mut Stdout) {
+        let gr = &mut self.gui_render;
+
+        if !gr.gui || !gr.gui && !gr.window && !gr.table {
+            Terminal::clean(stdout);
+        }
+
+        #[cfg(feature = "button")]
+        if !gr.button || !gr.gui {
+            for button in &self.button {
+                if button.draw {
+                    #[cfg(feature = "button")]
+                    ButtonS::render(&button, &None, stdout);
+                }
+            }
+
+            gr.button = true;
+        }
+
+        #[cfg(feature = "window")]
+        if !gr.window || !gr.gui {
+            for window in &self.window {
+                if window.draw {
+                    #[cfg(feature = "window")]
+                    WindowS::render(&window, stdout);
+                }
+            }
+
+            gr.window = true;
+        }
+
+        #[cfg(feature = "table")]
+        if !gr.table || !gr.gui {
+            for table in &self.table {
+                if table.draw {
+                    #[cfg(feature = "table")]
+                    TableS::render(&table, stdout);
+                }
+            }
+
+            gr.table = true;
+        }
+
+        if gr.window && gr.button && gr.table {
+            gr.gui = true;
         }
     }
 
@@ -204,13 +248,13 @@ impl GuiS {
                 }
             }
             {
-                for i in (x + 1)..(x + width - 1) {
-                    Terminal::teleport_mouse(&[i, y], stdout);
-                    Render::draw_char(&'-', &color_array, stdout);
+                Terminal::teleport_mouse(&[x, y], stdout);
+                Render::space(&color_array, width, stdout);
 
-                    Terminal::teleport_mouse(&[i, y + height - 1], stdout);
-                    Render::draw_char(&'-', &color_array, stdout);
-                }
+                Terminal::teleport_mouse(&[x, y + height - 1], stdout);
+                Render::space(&color_array, width, stdout);
+            }
+            {
                 for i in (y + 1)..(y + height - 1) {
                     Terminal::teleport_mouse(&[x, i], stdout);
                     Render::draw_char(&'|', &color_array, stdout);
@@ -222,18 +266,24 @@ impl GuiS {
         }
 
         if let Some(_) = flooded_border {
-            for q in (y + 1)..(y + height - 1) {
-                for w in (x + 1)..(x + width - 1) {
-                    Terminal::teleport_mouse(&[w, q], stdout);
+            Terminal::teleport_mouse(&[x + 1, y + 1], stdout);
+
+            for q in (y + 1)..(y + height) {
+                for _ in (x + 1)..(x + width - 1) {
                     Render::draw_char(&'0', &[Some(color[1]), Some(color[1])], stdout);
                 }
+
+                Terminal::teleport_mouse(&[x + 1, q], stdout);
             }
         } else {
+            Terminal::teleport_mouse(&[x, y], stdout);
+
             for q in (y)..(y + height) {
-                for w in (x)..(x + width) {
-                    Terminal::teleport_mouse(&[w, q], stdout);
+                for _ in (x)..(x + width) {
                     Render::draw_char(&'0', &[Some(color[1]), Some(color[1])], stdout);
                 }
+
+                Terminal::teleport_mouse(&[x, q], stdout);
             }
         }
     }
