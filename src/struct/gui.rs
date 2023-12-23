@@ -58,8 +58,6 @@ pub mod gui {
 
         fn update(&mut self, facts: &Self::Facts) {
             if let Some(country) = CountryS::hashmap_give(&facts.countries, &facts.name_country[1], true) {
-                println!("!");
-
                 #[cfg(feature = "table")]
                 if let Some(table) =
                     TableS::vector_give_mut(&mut self.table, &String::from("resourse"))
@@ -92,9 +90,11 @@ pub mod gui {
             }
 
             if facts.date.draw {
+                #[cfg(feature = "window")]
                 if let Some(window) =
                     WindowS::vector_give_mut(&mut self.window, &String::from("top_line"))
                 {
+                    #[cfg(feature = "button")]
                     if let Some(button) =
                         ButtonS::vector_give_mut(&mut window.button, &String::from("date"))
                     {

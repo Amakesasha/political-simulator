@@ -131,7 +131,8 @@ pub mod gui {
                     ([1, 1], [150, 9]),
                     [true; 2],
                     [Color::Green, Color::Blue],
-                    {
+
+                    #[cfg(feature = "button")] {
                         let mut vector: Vec<FactsButton> = Vec::new();
 
                         vector.push({
@@ -151,7 +152,10 @@ pub mod gui {
                         });
 
                         vector
-                    }
+                    },
+                    #[cfg(not(feature = "button"))] {
+                        Vec::new()
+                    },
                 )
             });
 
@@ -162,7 +166,7 @@ pub mod gui {
                     ([1, 11], [25, 35]),
                     [true; 2],
                     [Color::Green, Color::Blue],
-                    {
+                    #[cfg(feature = "button")] {
                         let mut vector: Vec<FactsButton> = Vec::new();
 
                         vector.push({
@@ -232,6 +236,9 @@ pub mod gui {
                         });
 
                         vector
+                    },
+                    #[cfg(not(feature = "button"))] {
+                        Vec::new()
                     },
                 )
             });

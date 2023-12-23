@@ -150,6 +150,7 @@ impl GuiS {
                         }
                     }
                 } else if let Err(name) = name {
+                    #[cfg(feature = "button")]
                     if let Some(window) = WindowS::vector_give(&self.window, &name[0]) {
                         if let Some(button) = ButtonS::vector_give(&window.button, &name[1]) {
                             if button.draw {
