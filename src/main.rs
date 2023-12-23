@@ -26,7 +26,7 @@ pub mod system {
     pub mod terminal;
 }
 
-// 1_646 Lines of script in the project
+// 2_713 Lines of script in the project
 
 fn main() {
     Flow::control(&mut stdout());
@@ -61,7 +61,7 @@ pub use game_date::create::{gui::*, logic::*, *};
 pub use r#struct::{
     game::*,
     geometry::*,
-    gui::{gui::*, window::*, button::*, table::*, path::*, gui_render::*},
+    gui::{button::*, gui::*, gui_render::*, path::*, table::*, window::*},
     logic::{
         country::{control::*, country::*, storage::*},
         date::*,

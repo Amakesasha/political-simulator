@@ -31,10 +31,7 @@ impl Give for CountryS {
     type Output = CountryS;
     type ID = String;
 
-    fn vector_give<'a>(
-        facts: &'a Vec<Self::Output>, 
-        id: &'a Self::ID
-    ) -> Option<&'a Self::Output> {
+    fn vector_give<'a>(facts: &'a Vec<Self::Output>, id: &'a Self::ID) -> Option<&'a Self::Output> {
         facts.iter().find(|data| &data.name == id)
     }
 
@@ -48,7 +45,7 @@ impl Give for CountryS {
     fn hashmap_give<'a>(
         facts: &'a HashMap<Self::ID, Self::Output>,
         id: &'a Self::ID,
-        num: bool
+        num: bool,
     ) -> Option<&'a Self::Output> {
         return if num {
             facts
@@ -60,13 +57,13 @@ impl Give for CountryS {
                 .iter()
                 .find(|(data, _)| *data == id)
                 .map(|(_, data)| data)
-        }
+        };
     }
 
     fn hashmap_give_mut<'a>(
         facts: &'a mut HashMap<Self::ID, Self::Output>,
         id: &Self::ID,
-        num: bool
+        num: bool,
     ) -> Option<&'a mut Self::Output> {
         return if num {
             facts
@@ -78,7 +75,7 @@ impl Give for CountryS {
                 .iter_mut()
                 .find(|(data, _)| *data == id)
                 .map(|(_, data)| data)
-        }
+        };
     }
 }
 

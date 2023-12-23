@@ -46,10 +46,7 @@ pub trait Give {
     type Output;
     type ID;
 
-    fn vector_give<'a>(
-        facts: &'a Vec<Self::Output>,
-        id: &'a Self::ID
-    ) -> Option<&'a Self::Output>;
+    fn vector_give<'a>(facts: &'a Vec<Self::Output>, id: &'a Self::ID) -> Option<&'a Self::Output>;
 
     fn vector_give_mut<'a>(
         facts: &'a mut Vec<Self::Output>,
@@ -57,15 +54,15 @@ pub trait Give {
     ) -> Option<&'a mut Self::Output>;
 
     fn hashmap_give<'a>(
-        facts: &'a HashMap<Self::ID, Self::Output>, 
-        id: &'a Self::ID, 
-        num: bool
+        facts: &'a HashMap<Self::ID, Self::Output>,
+        id: &'a Self::ID,
+        num: bool,
     ) -> Option<&'a Self::Output>;
 
     fn hashmap_give_mut<'a>(
         facts: &'a mut HashMap<Self::ID, Self::Output>,
         id: &Self::ID,
-        num: bool
+        num: bool,
     ) -> Option<&'a mut Self::Output>;
 }
 
@@ -79,8 +76,6 @@ pub trait Gui {
     type Output;
 
     fn open_all_close(vec: &mut Vec<Self::Output>, meaning: &bool);
-
-    fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool);
 
     fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool);
 }

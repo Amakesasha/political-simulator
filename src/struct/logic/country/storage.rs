@@ -50,13 +50,12 @@ impl Control for StorageS {
 #[derive(Debug, Clone, Copy)]
 pub struct ResourceS {
     pub(crate) quantity: f64,
-    pub(crate) price: f64,
 
     pub(crate) number_of_factory: usize,
     pub(crate) production_1_factory: f64,
 }
 
-pub type FactsResource = (f64, f64, usize, f64);
+pub type FactsResource = (f64, usize, f64);
 
 impl Create for ResourceS {
     type Output = ResourceS;
@@ -65,17 +64,15 @@ impl Create for ResourceS {
     fn new(facts: &Self::Facts) -> Self::Output {
         ResourceS {
             quantity: facts.0,
-            price: facts.1,
 
-            number_of_factory: facts.2,
-            production_1_factory: facts.3,
+            number_of_factory: facts.1,
+            production_1_factory: facts.2,
         }
     }
 
     fn default() -> Self::Output {
         ResourceS {
             quantity: 0.0,
-            price: 0.0,
 
             number_of_factory: 0,
             production_1_factory: 0.0,

@@ -53,9 +53,8 @@ pub mod logic {
 
             /*
                 0 - quantity
-                1 - price
-                2 - number_of_factory
-                3 - production_1_factory
+                1 - number_of_factory
+                2 - production_1_factory
             */
 
             vector.push({
@@ -63,16 +62,16 @@ pub mod logic {
                     String::from("Country"),
                     [
                         [
-                            (0.0, 0.0, 10, 5.0),
-                            (0.0, 0.0, 5, 2.5),
-                            (0.0, 0.0, 1, 1.25),
-                            (0.0, 0.0, 1, 0.25),
+                            (100000.0, 10, 5.0),
+                            (100000.0, 5, 2.5),
+                            (100000.0, 1, 1.25),
+                            (100000.0, 1, 0.25),
                         ],
                         [
-                            (0.0, 0.0, 10, 5.0),
-                            (0.0, 0.0, 5, 2.5),
-                            (0.0, 0.0, 1, 1.25),
-                            (0.0, 0.0, 1, 0.25),
+                            (0.0, 10, 5.0),
+                            (0.0, 5, 2.5),
+                            (0.0, 1, 1.25),
+                            (0.0, 1, 0.25),
                         ],
                     ],
                 )
@@ -83,16 +82,16 @@ pub mod logic {
                     String::from("Test"),
                     [
                         [
-                            (0.0, 0.0, 3, 5.0),
-                            (0.0, 0.0, 2, 2.5),
-                            (0.0, 0.0, 1, 1.25),
-                            (0.0, 0.0, 1, 0.25),
+                            (100000.0, 3, 5.0),
+                            (100000.0, 2, 2.5),
+                            (100000.0, 1, 1.25),
+                            (100000.0, 1, 0.25),
                         ],
                         [
-                            (0.0, 0.0, 3, 5.0),
-                            (0.0, 0.0, 2, 2.5),
-                            (0.0, 0.0, 1, 1.25),
-                            (0.0, 0.0, 1, 0.25),
+                            (0.0, 3, 5.0),
+                            (0.0, 2, 2.5),
+                            (0.0, 1, 1.25),
+                            (0.0, 1, 0.25),
                         ],
                     ],
                 )
@@ -130,7 +129,7 @@ pub mod gui {
                     String::from("top_line"),
                     true,
                     ([1, 1], [150, 9]),
-                    Some(true),
+                    [true; 2],
                     [Color::Green, Color::Blue],
                     {
                         let mut vector: Vec<FactsButton> = Vec::new();
@@ -139,20 +138,20 @@ pub mod gui {
                             (
                                 String::from("date"),
                                 true,
-                                ([2, 2], [14, 5]),
-                                Some(true),
+                                ([134, 2], [14, 5]),
+                                [true; 2],
                                 [Color::Cyan, Color::Black],
                                 None,
                                 Vec::new(),
                                 Some((
-                                    [Color::White, Color::Black], 
-                                    (String::from("\n 02.10.2009"))
+                                    [Color::White, Color::Black],
+                                    (String::from("\n 02.10.2009")),
                                 )),
                             )
                         });
 
                         vector
-                    },
+                    }
                 )
             });
 
@@ -161,7 +160,7 @@ pub mod gui {
                     String::from("navigation_bar"),
                     true,
                     ([1, 11], [25, 35]),
-                    Some(true),
+                    [true; 2],
                     [Color::Green, Color::Blue],
                     {
                         let mut vector: Vec<FactsButton> = Vec::new();
@@ -171,15 +170,11 @@ pub mod gui {
                                 String::from("resourse"),
                                 true,
                                 ([2, 2], [21, 5]),
-                                Some(true),
+                                [true; 2],
                                 [Color::Cyan, Color::Black],
                                 Some(KeyCode::Char('1')),
                                 vec![
-                                ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
-                                    ActionE::OpenWindow(GuiActionE::OpenOneClose(
-                                        String::from("resourse"),
-                                        true,
-                                    )),
+                                    ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
                                     ActionE::OpenTable(GuiActionE::OpenOneClose(
                                         String::from("resourse"),
                                         true,
@@ -187,7 +182,7 @@ pub mod gui {
                                 ],
                                 Some((
                                     [Color::White, Color::Black],
-                                    String::from("\n   Resourse (1)")
+                                    String::from("\n   Resourse (1)"),
                                 )),
                             )
                         });
@@ -197,15 +192,11 @@ pub mod gui {
                                 String::from("electricity"),
                                 true,
                                 ([2, 8], [21, 5]),
-                                Some(true),
+                                [true; 2],
                                 [Color::Cyan, Color::Black],
                                 Some(KeyCode::Char('2')),
                                 vec![
                                     ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
-                                    ActionE::OpenWindow(GuiActionE::OpenOneClose(
-                                        String::from("electricity"),
-                                        true,
-                                    )),
                                     ActionE::OpenTable(GuiActionE::OpenOneClose(
                                         String::from("electricity"),
                                         true,
@@ -223,14 +214,10 @@ pub mod gui {
                                 String::from("trade"),
                                 true,
                                 ([2, 14], [21, 5]),
-                                Some(true),
+                                [true; 2],
                                 [Color::Cyan, Color::Black],
                                 Some(KeyCode::Char('3')),
                                 vec![
-                                    ActionE::OpenWindow(GuiActionE::OpenOneClose(
-                                        String::from("trade"),
-                                        true,
-                                    )),
                                     ActionE::OpenTable(GuiActionE::OpenAllClose(false)),
                                     ActionE::OpenTable(GuiActionE::OpenOneClose(
                                         String::from("trade"),
@@ -251,32 +238,12 @@ pub mod gui {
 
             vector.push({
                 (
-                    String::from("resourse"),
+                    String::from("main"),
                     true,
                     ([27, 11], [124, 35]),
-                    Some(true),
+                    [true; 2],
                     [Color::Green, Color::Blue],
-                    {
-                        let mut vector: Vec<FactsButton> = Vec::new();
-
-                        vector.push({
-                            (
-                                String::from("name_resourse"),
-                                false,
-                                ([2, 2], [12, 5]),
-                                Some(true),
-                                [Color::Cyan, Color::Black],
-                                None,
-                                Vec::new(),
-                                Some((
-                                    [Color::White, Color::Black],
-                                    String::from("\n  Resourse ")
-                                )),
-                            )
-                        });
-
-                        vector
-                    },
+                    Vec::new(),
                 )
             });
 
@@ -298,21 +265,18 @@ pub mod gui {
         pub fn give_date() -> Vec<FactsButton> {
             let mut vector: Vec<FactsButton> = Vec::new();
 
-            /*vector.push({
+            vector.push({
                 (
-                    String::from("qwerty"),
-                    true,
-                    ([20, 30], [10, 20]),
+                    String::new(),
                     false,
-                    [Color::White, Color::Red],
+                    ([0, 0], [0, 0]),
+                    [false; 2],
+                    ColorR::defaulf_2(),
                     None,
-                    ActionE::Non,
-                    Some((
-                        String::from("Hello!!\nI'm_Sasha\n X_Y_U"),
-                        [Color::White, Color::Red],
-                    )),
+                    Vec::new(),
+                    None,
                 )
-            });*/
+            });
 
             vector
         }
@@ -337,7 +301,7 @@ pub mod gui {
                     String::from("resourse"),
                     true,
                     [29, 13],
-                    Some(true),
+                    [true; 2],
                     [Color::Cyan, Color::Black],
                     1,
                     vec![
@@ -396,7 +360,7 @@ pub mod gui {
                     String::from("electricity"),
                     false,
                     [29, 13],
-                    Some(true),
+                    [true; 2],
                     [Color::Magenta, Color::Black],
                     1,
                     vec![
@@ -487,7 +451,7 @@ pub mod gui {
 
     impl GuiRenderS {
         pub fn give_date() -> FactsGuiRender {
-            [false; 4]
+            (false, Ok(false), Ok(false), Ok(false))
         }
     }
 }

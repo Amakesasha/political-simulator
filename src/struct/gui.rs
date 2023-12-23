@@ -1,5 +1,3 @@
-use crate::*;
-
 #[cfg(feature = "gui")]
 pub mod gui {
     use crate::*;
@@ -60,6 +58,8 @@ pub mod gui {
 
         fn update(&mut self, facts: &Self::Facts) {
             if let Some(country) = CountryS::hashmap_give(&facts.countries, &facts.name_country[1], true) {
+                println!("!");
+
                 #[cfg(feature = "table")]
                 if let Some(table) =
                     TableS::vector_give_mut(&mut self.table, &String::from("resourse"))
@@ -83,7 +83,29 @@ pub mod gui {
                         )]);
 
 
-                        self.gui_render.table_up(&false);
+                        self.gui_render.table_err(
+                            &true, 
+                            &vec![(table.name.clone(), false)]
+                        );
+                    }
+                }
+            }
+
+            if facts.date.draw {
+                if let Some(window) =
+                    WindowS::vector_give_mut(&mut self.window, &String::from("top_line"))
+                {
+                    if let Some(button) =
+                        ButtonS::vector_give_mut(&mut window.button, &String::from("date"))
+                    {
+                        button.text = Some((
+                            [Color::White, Color::Black], 
+                            "\n ".to_owned() + &facts.date.date_to_string()
+                        ));
+                        self.gui_render.window_err(
+                            &true, 
+                            &vec![Err([window.name.clone(), button.name.clone()])]
+                        );
                     }
                 }
             }
@@ -113,7 +135,8 @@ pub mod window {
         pub(crate) draw: bool,
         pub(crate) aabb: AabbS,
 
-        pub(crate) flooded_border: Option<bool>,
+        pub(crate) flooded_border: bool,
+        pub(crate) interior: bool,
         pub(crate) color: [Color; 2],
 
         #[cfg(feature = "button")]
@@ -124,7 +147,7 @@ pub mod window {
         String,
         bool,
         FactsAabb,
-        Option<bool>,
+        [bool; 2],
         [Color; 2],
         Vec<FactsButton>,
     );
@@ -146,7 +169,8 @@ pub mod window {
                 draw: facts.1,
                 aabb: AabbS::new(&facts.2),
 
-                flooded_border: facts.3.clone(),
+                flooded_border: facts.3[0],
+                interior: facts.3[1],
                 color: facts.4,
 
                 #[cfg(feature = "button")]
@@ -160,7 +184,8 @@ pub mod window {
                 draw: false,
                 aabb: AabbS::default(),
 
-                flooded_border: None,
+                flooded_border: false,
+                interior: false,
                 color: ColorR::defaulf_2(),
 
                 #[cfg(feature = "button")]
@@ -233,14 +258,6 @@ pub mod window {
             }
         }
 
-        fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
-            WindowS::open_all_close(vec, &!meaning);
-
-            if let Some(window) = WindowS::vector_give_mut(vec, name) {
-                window.draw = *meaning;
-            }
-        }
-
         fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
             if let Some(window) = WindowS::vector_give_mut(vec, name) {
                 window.draw = *meaning;
@@ -277,7 +294,6 @@ pub mod button {
     #[derive(Debug, Clone)]
     pub enum GuiActionE {
         OpenAllClose(bool),
-        OpenRestClose(String, bool),
         OpenOneClose(String, bool),
     }
 
@@ -289,7 +305,8 @@ pub mod button {
         pub(crate) draw: bool,
         pub(crate) aabb: AabbS,
 
-        pub(crate) flooded_border: Option<bool>,
+        pub(crate) flooded_border: bool,
+        pub(crate) interior: bool,
         pub(crate) color: [Color; 2],
 
         pub(crate) button: Option<KeyCode>,
@@ -301,7 +318,7 @@ pub mod button {
         String,
         bool,
         FactsAabb,
-        Option<bool>,
+        [bool; 2],
         [Color; 2],
         Option<KeyCode>,
         Vec<ActionE>,
@@ -325,7 +342,8 @@ pub mod button {
                 draw: facts.1,
                 aabb: AabbS::new(&facts.2),
 
-                flooded_border: facts.3.clone(),
+                flooded_border: facts.3[0],
+                interior: facts.3[1],
                 color: facts.4,
 
                 button: facts.5,
@@ -341,7 +359,8 @@ pub mod button {
                 draw: false,
                 aabb: AabbS::default(),
 
-                flooded_border: None,
+                flooded_border: false,
+                interior: false,
                 color: ColorR::defaulf_2(),
 
                 button: None,
@@ -416,14 +435,6 @@ pub mod button {
             }
         }
 
-        fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
-            ButtonS::open_all_close(vec, &!meaning);
-
-            if let Some(button) = ButtonS::vector_give_mut(vec, name) {
-                button.draw = *meaning;
-            }
-        }
-
         fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
             if let Some(button) = ButtonS::vector_give_mut(vec, name) {
                 button.draw = *meaning;
@@ -460,7 +471,8 @@ pub mod table {
         pub(crate) draw: bool,
         pub(crate) position: PositionS,
 
-        pub(crate) flooded_border: Option<bool>,
+        pub(crate) flooded_border: bool,
+        pub(crate) interior: bool,
         pub(crate) color: [Color; 2],
 
         pub(crate) indentation: u16,
@@ -471,7 +483,7 @@ pub mod table {
         String,
         bool,
         FactsPosition,
-        Option<bool>,
+        [bool; 2],
         [Color; 2],
         u16,
         Vec<(FactsAabb, Vec<([Color; 2], String)>)>,
@@ -494,7 +506,8 @@ pub mod table {
                 draw: facts.1,
                 position: PositionS::new(&facts.2),
 
-                flooded_border: facts.3.clone(),
+                flooded_border: facts.3[0],
+                interior: facts.3[1],
                 color: facts.4,
 
                 indentation: facts.5,
@@ -516,7 +529,8 @@ pub mod table {
                 draw: false,
                 position: PositionS::default(),
 
-                flooded_border: None,
+                flooded_border: false,
+                interior: false,
                 color: ColorR::defaulf_2(),
 
                 indentation: 0,
@@ -585,14 +599,6 @@ pub mod table {
 
         fn open_all_close(vec: &mut Vec<Self::Output>, meaning: &bool) {
             for table in vec {
-                table.draw = *meaning;
-            }
-        }
-
-        fn open_rest_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool) {
-            TableS::open_all_close(vec, &!meaning);
-
-            if let Some(table) = TableS::vector_give_mut(vec, name) {
                 table.draw = *meaning;
             }
         }
@@ -725,12 +731,17 @@ pub mod gui_render {
     #[derive(Debug, Clone)]
     pub struct GuiRenderS {
         pub(crate) gui: bool,
-        pub(crate) window: bool,
-        pub(crate) button: bool,
-        pub(crate) table: bool,
+        pub(crate) window: Result<bool, Vec<Result<String, [String; 2]>>>,
+        pub(crate) button: Result<bool, Vec<String>>,
+        pub(crate) table: Result<bool, Vec<(String, bool)>>,
     }
 
-    pub type FactsGuiRender = [bool; 4];
+    pub type FactsGuiRender = (
+        bool,
+        Result<bool, Vec<Result<String, [String; 2]>>>,
+        Result<bool, Vec<String>>,
+        Result<bool, Vec<(String, bool)>>,
+    );
 
     impl Create for GuiRenderS {
         type Output = GuiRenderS;
@@ -738,35 +749,114 @@ pub mod gui_render {
 
         fn new(facts: &Self::Facts) -> Self::Output {
             GuiRenderS {
-                gui: facts[0],
-                window: facts[1],
-                button: facts[2],
-                table: facts[3],
+                gui: facts.0,
+                window: facts.1.clone(),
+                button: facts.2.clone(),
+                table: facts.3.clone(),
             }
         }
 
         fn default() -> Self::Output {
             GuiRenderS {
-                gui: true,
-                window: true,
-                button: true,
-                table: true,
+                gui: false,
+                window: Ok(false),
+                button: Ok(false),
+                table: Ok(false),
+            }
+        }
+    }
+
+    //
+    impl GuiRenderS {
+        pub fn gui_update(&mut self, result: &bool, ) {
+            self.gui = *result;
+        }
+    }
+
+    impl GuiRenderS {
+        pub fn window_ok(&mut self, result: &bool, ) {
+            self.window = Ok(*result);
+        }
+
+        pub fn window_err(
+            &mut self, 
+            add_or_delete: &bool, 
+            data: &Vec<Result<String, [String; 2]>>
+        ) {
+            if let Err(ref mut window) = &mut self.window {
+                for name in data {
+                    if *add_or_delete {
+                        if let None = window.iter().position(|x| x == name) {
+                            window.push(name.clone());
+                        }
+                    } else {
+                        if let Some(index) = window.iter().position(|x| x == name) {
+                            let _ = window.remove(index);
+                        }
+                    }
+                }
+            } else {
+                self.window = Err(Vec::new());
+                self.window_err(add_or_delete, data);
             }
         }
     }
 
     impl GuiRenderS {
-        pub fn gui_up(&mut self, result: &bool) {
-            self.gui = *result;
+        pub fn button_ok(&mut self, result: &bool, ) {
+            self.button = Ok(*result);
         }
-        pub fn window_up(&mut self, result: &bool) {
-            self.window = *result;
+
+        pub fn button_err(
+            &mut self, 
+            add_or_delete: &bool, 
+            data: &Vec<String>
+        ) {
+            if let Err(ref mut button) = &mut self.button {
+                for name in data {
+                    if *add_or_delete {
+                        if let None = button.iter().position(|x| x == name) {
+                            button.push(name.clone());
+                        }
+                    } else {
+                        if let Some(index) = button.iter().position(|x| x == name) {
+                            let _ = button.remove(index);
+                        }
+                    }
+                }
+            } else {
+                self.button = Err(Vec::new());
+                self.button_err(add_or_delete, data);
+            }
         }
-        pub fn button_up(&mut self, result: &bool) {
-            self.button = *result;
+    }
+    
+    impl GuiRenderS {
+        pub fn table_ok(&mut self, result: &bool, ) {
+            self.table = Ok(*result);
         }
-        pub fn table_up(&mut self, result: &bool) {
-            self.table = *result;
+
+        pub fn table_err(
+            &mut self, 
+            add_or_delete: &bool, 
+            data: &Vec<(String, bool)>
+        ) {
+            if let Err(ref mut table) = &mut self.table {
+                for name in data {
+                    if *add_or_delete {
+                        if let None = table.iter().position(|x| x == name) {
+                            table.push(name.clone());
+                        }
+                    } else {
+                        if let Some(index) = table.iter().position(|x| x == name) {
+                            let _ = table.remove(index);
+                        }
+                    }
+                }
+            } else {
+                self.table = Err(Vec::new());
+                self.table_err(add_or_delete, data);
+            }
         }
     }
 }
