@@ -3,10 +3,10 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct CountryS {
     pub(crate) name: String,
-    pub(crate) storage: [StorageS; 2],
+    pub(crate) storage: [StorageS; NUM_STOR],
 }
 
-pub type FactsCountry = (String, [FactsStorage; 2]);
+pub type FactsCountry = (String, [FactsStorage; NUM_STOR]);
 
 impl Create for CountryS {
     type Output = CountryS;
@@ -15,14 +15,17 @@ impl Create for CountryS {
     fn new(facts: &Self::Facts) -> Self::Output {
         CountryS {
             name: facts.0.clone(),
-            storage: [StorageS::new(&facts.1[0]), StorageS::new(&facts.1[1])],
+            storage: [
+                StorageS::new(&facts.1[0]), 
+                StorageS::new(&facts.1[1])
+            ],
         }
     }
 
     fn default() -> Self::Output {
         CountryS {
             name: String::new(),
-            storage: [StorageS::default(), StorageS::default()],
+            storage: [StorageS::default(); NUM_STOR],
         }
     }
 }

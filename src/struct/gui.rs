@@ -1,22 +1,30 @@
+#[derive(Debug, Clone, PartialEq)]
+pub enum GuiObject {
+    Window,
+    Button,
+    Table(bool),
+}
+
 #[cfg(feature = "gui")]
 pub mod gui {
     use crate::*;
 
     #[derive(Debug, Clone)]
     pub struct GuiS {
-        #[cfg(feature = "button")]
-        pub(crate) button: Vec<ButtonS>,
         #[cfg(feature = "window")]
         pub(crate) window: Vec<WindowS>,
+        #[cfg(feature = "button")]
+        pub(crate) button: Vec<ButtonS>,
         #[cfg(feature = "table")]
         pub(crate) table: Vec<TableS>,
+
         pub(crate) path: Vec<PathS>,
         pub(crate) gui_render: GuiRenderS,
     }
 
     pub type FactsGui = (
-        Vec<FactsButton>,
         Vec<FactsWindow>,
+        Vec<FactsButton>,
         Vec<FactsTable>,
         Vec<FactsPath>,
         FactsGuiRender,
@@ -28,12 +36,13 @@ pub mod gui {
 
         fn new(facts: &Self::Facts) -> Self::Output {
             GuiS {
-                #[cfg(feature = "button")]
-                button: ButtonS::vec_new(&facts.0),
                 #[cfg(feature = "window")]
-                window: WindowS::vec_new(&facts.1),
+                window: WindowS::vec_new(&facts.0),
+                #[cfg(feature = "button")]
+                button: ButtonS::vec_new(&facts.1),
                 #[cfg(feature = "table")]
                 table: TableS::vec_new(&facts.2),
+
                 path: PathS::vec_new(&facts.3),
                 gui_render: GuiRenderS::new(&facts.4),
             }
@@ -41,14 +50,15 @@ pub mod gui {
 
         fn default() -> Self::Output {
             GuiS {
-                #[cfg(feature = "button")]
-                button: Vec::new(),
                 #[cfg(feature = "window")]
                 window: Vec::new(),
+                #[cfg(feature = "button")]
+                button: Vec::new(),
                 #[cfg(feature = "table")]
                 table: Vec::new(),
+
                 path: Vec::new(),
-                gui_render: GuiRenderS::default()
+                gui_render: GuiRenderS::default(),
             }
         }
     }
@@ -57,34 +67,52 @@ pub mod gui {
         type Facts = LogicS;
 
         fn update(&mut self, facts: &Self::Facts) {
-            if let Some(country) = CountryS::hashmap_give(&facts.countries, &facts.name_country[1], true) {
-                #[cfg(feature = "table")]
-                if let Some(table) =
-                    TableS::vector_give_mut(&mut self.table, &String::from("resourse"))
+            if let Some(country) =
+                CountryS::hashmap_give(&facts.countries, &facts.name_country[1], true)
+            {
+                #[cfg(feature = "window")]
+                if let Some(window) =
+                    WindowS::vector_give_mut(&mut self.window, &String::from("main"))
                 {
-                    if table.draw {
-                        table.update(&vec![(
-                            [1, 1],
-                            format!("\n  {}", country.storage[0].0[0].quantity),
-                        )]);
-                        table.update(&vec![(
-                            [1, 2],
-                            format!("\n  {}", country.storage[0].0[1].quantity),
-                        )]);
-                        table.update(&vec![(
-                            [1, 3],
-                            format!("\n  {}", country.storage[0].0[2].quantity),
-                        )]);
-                        table.update(&vec![(
-                            [1, 4],
-                            format!("\n  {}", country.storage[0].0[3].quantity),
-                        )]);
+                    #[cfg(feature = "table")]
+                    if let Some(table) =
+                        TableS::vector_give_mut(&mut window.table, &String::from("resourse"))
+                    {
+                        if table.draw {
+                            table.update(&vec![
+                                ([1, 1], format!("\n {}", country.storage[0].0[0].quantity)),
+                                ([1, 2], format!("\n {}", country.storage[0].0[1].quantity)),
+                                ([1, 3], format!("\n {}", country.storage[0].0[2].quantity)),
+                                ([1, 4], format!("\n {}", country.storage[0].0[3].quantity)),
+                            ]);
 
+                            table.update(&vec![
+                                (
+                                    [2, 1],
+                                    format!("\n {}", country.storage[0].0[0].number_of_factory),
+                                ),
+                                (
+                                    [2, 2],
+                                    format!("\n {}", country.storage[0].0[1].number_of_factory),
+                                ),
+                                (
+                                    [2, 3],
+                                    format!("\n {}", country.storage[0].0[2].number_of_factory),
+                                ),
+                                (
+                                    [2, 4],
+                                    format!("\n {}", country.storage[0].0[3].number_of_factory),
+                                ),
+                            ]);
 
-                        self.gui_render.table_err(
-                            &true, 
-                            &vec![(table.name.clone(), false)]
-                        );
+                            self.gui_render.window_err(
+                                &true,
+                                &vec![Err((
+                                    GuiObject::Table(false),
+                                    [window.name.clone(), table.name.clone()],
+                                ))],
+                            );
+                        }
                     }
                 }
             }
@@ -99,12 +127,15 @@ pub mod gui {
                         ButtonS::vector_give_mut(&mut window.button, &String::from("date"))
                     {
                         button.text = Some((
-                            [Color::White, Color::Black], 
-                            "\n ".to_owned() + &facts.date.date_to_string()
+                            [Color::White, Color::Black],
+                            "\n ".to_owned() + &facts.date.date_to_string(),
                         ));
                         self.gui_render.window_err(
-                            &true, 
-                            &vec![Err([window.name.clone(), button.name.clone()])]
+                            &true,
+                            &vec![Err((
+                                GuiObject::Button,
+                                [window.name.clone(), button.name.clone()],
+                            ))],
                         );
                     }
                 }
@@ -141,6 +172,8 @@ pub mod window {
 
         #[cfg(feature = "button")]
         pub(crate) button: Vec<ButtonS>,
+        #[cfg(feature = "table")]
+        pub(crate) table: Vec<TableS>,
     }
 
     pub type FactsWindow = (
@@ -150,6 +183,7 @@ pub mod window {
         [bool; 2],
         [Color; 2],
         Vec<FactsButton>,
+        Vec<FactsTable>,
     );
 
     impl Default for &WindowS {
@@ -175,6 +209,8 @@ pub mod window {
 
                 #[cfg(feature = "button")]
                 button: ButtonS::vec_new(&facts.5),
+                #[cfg(feature = "table")]
+                table: TableS::vec_new(&facts.6),
             }
         }
 
@@ -190,6 +226,8 @@ pub mod window {
 
                 #[cfg(feature = "button")]
                 button: Vec::new(),
+                #[cfg(feature = "table")]
+                table: Vec::new(),
             }
         }
     }
@@ -199,8 +237,8 @@ pub mod window {
         type ID = String;
 
         fn vector_give<'a>(
-            facts: &'a Vec<Self::Output>, 
-            id: &'a Self::ID
+            facts: &'a Vec<Self::Output>,
+            id: &'a Self::ID,
         ) -> Option<&'a Self::Output> {
             facts.iter().find(|data| &data.name == id)
         }
@@ -215,7 +253,7 @@ pub mod window {
         fn hashmap_give<'a>(
             facts: &'a HashMap<Self::ID, Self::Output>,
             id: &'a Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a Self::Output> {
             return if num {
                 facts
@@ -227,13 +265,13 @@ pub mod window {
                     .iter()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
             id: &Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a mut Self::Output> {
             return if num {
                 facts
@@ -245,7 +283,7 @@ pub mod window {
                     .iter_mut()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
     }
 
@@ -376,8 +414,8 @@ pub mod button {
         type ID = String;
 
         fn vector_give<'a>(
-            facts: &'a Vec<Self::Output>, 
-            id: &'a Self::ID
+            facts: &'a Vec<Self::Output>,
+            id: &'a Self::ID,
         ) -> Option<&'a Self::Output> {
             facts.iter().find(|data| &data.name == id)
         }
@@ -392,7 +430,7 @@ pub mod button {
         fn hashmap_give<'a>(
             facts: &'a HashMap<Self::ID, Self::Output>,
             id: &'a Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a Self::Output> {
             return if num {
                 facts
@@ -404,13 +442,13 @@ pub mod button {
                     .iter()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
             id: &Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a mut Self::Output> {
             return if num {
                 facts
@@ -422,7 +460,7 @@ pub mod button {
                     .iter_mut()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
     }
 
@@ -476,8 +514,10 @@ pub mod table {
         pub(crate) color: [Color; 2],
 
         pub(crate) indentation: u16,
-        pub(crate) cells: Vec<(AabbS, Vec<([Color; 2], String)>)>,
+        pub(crate) cells: Vec<(SizeS, Vec<Cell>)>,
     }
+
+    pub type Cell = ([Color; 2], String);
 
     pub type FactsTable = (
         String,
@@ -486,7 +526,7 @@ pub mod table {
         [bool; 2],
         [Color; 2],
         u16,
-        Vec<(FactsAabb, Vec<([Color; 2], String)>)>,
+        Vec<(FactsSize, Vec<([Color; 2], String)>)>,
     );
 
     impl Default for &TableS {
@@ -515,7 +555,7 @@ pub mod table {
                     let mut vector = Vec::new();
 
                     for i in &facts.6 {
-                        vector.push((AabbS::new(&i.0), i.1.clone(), ));
+                        vector.push((SizeS::new(&i.0), i.1.clone()));
                     }
 
                     vector
@@ -544,8 +584,8 @@ pub mod table {
         type ID = String;
 
         fn vector_give<'a>(
-            facts: &'a Vec<Self::Output>, 
-            id: &'a Self::ID
+            facts: &'a Vec<Self::Output>,
+            id: &'a Self::ID,
         ) -> Option<&'a Self::Output> {
             facts.iter().find(|data| &data.name == id)
         }
@@ -560,7 +600,7 @@ pub mod table {
         fn hashmap_give<'a>(
             facts: &'a HashMap<Self::ID, Self::Output>,
             id: &'a Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a Self::Output> {
             return if num {
                 facts
@@ -572,13 +612,13 @@ pub mod table {
                     .iter()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
             id: &Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a mut Self::Output> {
             return if num {
                 facts
@@ -590,7 +630,7 @@ pub mod table {
                     .iter_mut()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
     }
 
@@ -672,8 +712,8 @@ pub mod path {
         type ID = KeyCode;
 
         fn vector_give<'a>(
-            facts: &'a Vec<Self::Output>, 
-            id: &'a Self::ID
+            facts: &'a Vec<Self::Output>,
+            id: &'a Self::ID,
         ) -> Option<&'a Self::Output> {
             facts.iter().find(|data| &data.code == id)
         }
@@ -688,7 +728,7 @@ pub mod path {
         fn hashmap_give<'a>(
             facts: &'a HashMap<Self::ID, Self::Output>,
             id: &'a Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a Self::Output> {
             return if num {
                 facts
@@ -700,13 +740,13 @@ pub mod path {
                     .iter()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
 
         fn hashmap_give_mut<'a>(
             facts: &'a mut HashMap<Self::ID, Self::Output>,
             id: &Self::ID,
-            num: bool
+            num: bool,
         ) -> Option<&'a mut Self::Output> {
             return if num {
                 facts
@@ -718,7 +758,7 @@ pub mod path {
                     .iter_mut()
                     .find(|(data, _)| *data == id)
                     .map(|(_, data)| data)
-            }
+            };
         }
     }
 }
@@ -731,14 +771,14 @@ pub mod gui_render {
     #[derive(Debug, Clone)]
     pub struct GuiRenderS {
         pub(crate) gui: bool,
-        pub(crate) window: Result<bool, Vec<Result<String, [String; 2]>>>,
+        pub(crate) window: Result<bool, Vec<Result<String, (GuiObject, [String; 2])>>>,
         pub(crate) button: Result<bool, Vec<String>>,
         pub(crate) table: Result<bool, Vec<(String, bool)>>,
     }
 
     pub type FactsGuiRender = (
         bool,
-        Result<bool, Vec<Result<String, [String; 2]>>>,
+        Result<bool, Vec<Result<String, (GuiObject, [String; 2])>>>,
         Result<bool, Vec<String>>,
         Result<bool, Vec<(String, bool)>>,
     );
@@ -768,20 +808,20 @@ pub mod gui_render {
 
     //
     impl GuiRenderS {
-        pub fn gui_update(&mut self, result: &bool, ) {
+        pub fn gui_update(&mut self, result: &bool) {
             self.gui = *result;
         }
     }
 
     impl GuiRenderS {
-        pub fn window_ok(&mut self, result: &bool, ) {
+        pub fn window_ok(&mut self, result: &bool) {
             self.window = Ok(*result);
         }
 
         pub fn window_err(
-            &mut self, 
-            add_or_delete: &bool, 
-            data: &Vec<Result<String, [String; 2]>>
+            &mut self,
+            add_or_delete: &bool,
+            data: &Vec<Result<String, (GuiObject, [String; 2])>>,
         ) {
             if let Err(ref mut window) = &mut self.window {
                 for name in data {
@@ -803,15 +843,11 @@ pub mod gui_render {
     }
 
     impl GuiRenderS {
-        pub fn button_ok(&mut self, result: &bool, ) {
+        pub fn button_ok(&mut self, result: &bool) {
             self.button = Ok(*result);
         }
 
-        pub fn button_err(
-            &mut self, 
-            add_or_delete: &bool, 
-            data: &Vec<String>
-        ) {
+        pub fn button_err(&mut self, add_or_delete: &bool, data: &Vec<String>) {
             if let Err(ref mut button) = &mut self.button {
                 for name in data {
                     if *add_or_delete {
@@ -830,17 +866,13 @@ pub mod gui_render {
             }
         }
     }
-    
+
     impl GuiRenderS {
-        pub fn table_ok(&mut self, result: &bool, ) {
+        pub fn table_ok(&mut self, result: &bool) {
             self.table = Ok(*result);
         }
 
-        pub fn table_err(
-            &mut self, 
-            add_or_delete: &bool, 
-            data: &Vec<(String, bool)>
-        ) {
+        pub fn table_err(&mut self, add_or_delete: &bool, data: &Vec<(String, bool)>) {
             if let Err(ref mut table) = &mut self.table {
                 for name in data {
                     if *add_or_delete {

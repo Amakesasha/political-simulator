@@ -35,6 +35,7 @@ pub mod logic {
                     [2500.0, 1250.0, 1000.0, 0.0],
                     [7500.0, 3450.0, 2500.0, 0.0],
                 ],
+                [[0.0; 4]; 4]
             ];
 
             (date, name, password, country, resources_for_construction)
@@ -53,8 +54,9 @@ pub mod logic {
 
             /*
                 0 - quantity
-                1 - number_of_factory
-                2 - production_1_factory
+                1 - storage
+                2 - number_of_factory
+                3 - production_1_factory
             */
 
             vector.push({
@@ -62,16 +64,16 @@ pub mod logic {
                     String::from("Country"),
                     [
                         [
-                            (100000.0, 10, 5.0),
-                            (100000.0, 5, 2.5),
-                            (100000.0, 1, 1.25),
-                            (100000.0, 1, 0.25),
+                            (100.0, 5, 100.0, 10, 5.0),
+                            (100.0, 5, 100.0, 5, 2.5),
+                            (100.0, 5, 100.0, 1, 1.25),
+                            (100.0, 5, 100.0, 1, 0.25),
                         ],
                         [
-                            (0.0, 10, 5.0),
-                            (0.0, 5, 2.5),
-                            (0.0, 1, 1.25),
-                            (0.0, 1, 0.25),
+                            (0.0, 5, 100.0, 10, 5.0),
+                            (0.0, 5, 100.0, 5, 2.5),
+                            (0.0, 5, 100.0, 1, 1.25),
+                            (0.0, 5, 100.0, 1, 0.25),
                         ],
                     ],
                 )
@@ -82,16 +84,16 @@ pub mod logic {
                     String::from("Test"),
                     [
                         [
-                            (100000.0, 3, 5.0),
-                            (100000.0, 2, 2.5),
-                            (100000.0, 1, 1.25),
-                            (100000.0, 1, 0.25),
+                            (1000.0, 5, 100.0, 3, 5.0),
+                            (1000.0, 5, 100.0, 2, 2.5),
+                            (1000.0, 5, 100.0, 1, 1.25),
+                            (1000.0, 5, 100.0, 1, 0.25),
                         ],
                         [
-                            (0.0, 3, 5.0),
-                            (0.0, 2, 2.5),
-                            (0.0, 1, 1.25),
-                            (0.0, 1, 0.25),
+                            (0.0, 5, 100.0, 3, 5.0), 
+                            (0.0, 5, 100.0, 2, 2.5), 
+                            (0.0, 5, 100.0, 1, 1.25), 
+                            (0.0, 5, 100.0, 1, 0.25)
                         ],
                     ],
                 )
@@ -107,13 +109,13 @@ pub mod gui {
 
     impl GuiS {
         pub fn give_date() -> FactsGui {
-            let button: Vec<FactsButton> = ButtonS::give_date();
             let window: Vec<FactsWindow> = WindowS::give_date();
+            let button: Vec<FactsButton> = ButtonS::give_date();
             let table: Vec<FactsTable> = TableS::give_date();
             let path: Vec<FactsPath> = PathS::give_date();
             let gui_render: FactsGuiRender = GuiRenderS::give_date();
 
-            (button, window, table, path, gui_render)
+            (window, button, table, path, gui_render)
         }
     }
 
@@ -131,8 +133,9 @@ pub mod gui {
                     ([1, 1], [150, 9]),
                     [true; 2],
                     [Color::Green, Color::Blue],
-
-                    #[cfg(feature = "button")] {
+                    // button
+                    #[cfg(feature = "button")]
+                    {
                         let mut vector: Vec<FactsButton> = Vec::new();
 
                         vector.push({
@@ -153,7 +156,17 @@ pub mod gui {
 
                         vector
                     },
-                    #[cfg(not(feature = "button"))] {
+                    #[cfg(not(feature = "button"))]
+                    {
+                        Vec::new()
+                    },
+                    // table
+                    #[cfg(feature = "table")]
+                    {
+                        Vec::new()
+                    },
+                    #[cfg(not(feature = "table"))]
+                    {
                         Vec::new()
                     },
                 )
@@ -166,7 +179,9 @@ pub mod gui {
                     ([1, 11], [25, 35]),
                     [true; 2],
                     [Color::Green, Color::Blue],
-                    #[cfg(feature = "button")] {
+                    // button
+                    #[cfg(feature = "button")]
+                    {
                         let mut vector: Vec<FactsButton> = Vec::new();
 
                         vector.push({
@@ -237,7 +252,17 @@ pub mod gui {
 
                         vector
                     },
-                    #[cfg(not(feature = "button"))] {
+                    #[cfg(not(feature = "button"))]
+                    {
+                        Vec::new()
+                    },
+                    // table
+                    #[cfg(feature = "table")]
+                    {
+                        Vec::new()
+                    },
+                    #[cfg(not(feature = "table"))]
+                    {
                         Vec::new()
                     },
                 )
@@ -251,6 +276,15 @@ pub mod gui {
                     [true; 2],
                     [Color::Green, Color::Blue],
                     Vec::new(),
+                    // table
+                    #[cfg(feature = "table")]
+                    {
+                        TableS::give_date_main()
+                    },
+                    #[cfg(not(feature = "table"))]
+                    {
+                        Vec::new()
+                    },
                 )
             });
 
@@ -300,10 +334,11 @@ pub mod gui {
 
     #[cfg(feature = "table")]
     impl TableS {
-        pub fn give_date() -> Vec<FactsTable> {
+        pub fn give_date_main() -> Vec<FactsTable> {
             let mut vector: Vec<FactsTable> = Vec::new();
 
             vector.push({
+                let b_d = String::from("\n        B(u) D(h)");
                 (
                     String::from("resourse"),
                     true,
@@ -313,7 +348,7 @@ pub mod gui {
                     1,
                     vec![
                         (
-                            ([0, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Resourse ")),
                                 ([Color::White, Color::Black], String::from("\n  Concrete")),
@@ -323,36 +358,43 @@ pub mod gui {
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
+                                ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [20, 5],
+                            vec![
+                                (
+                                    [Color::White, Color::Black],
+                                    String::from("\n Factory Quantity "),
+                                ),
+                                ([Color::White, Color::Black], b_d.clone()),
+                                ([Color::White, Color::Black], b_d.clone()),
+                                ([Color::White, Color::Black], b_d.clone()),
+                                ([Color::White, Color::Black], b_d.clone()),
+                            ],
+                        ),
+                        (
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
+                                ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
                                 ([Color::White, Color::Black], String::from("\n")),
-                                ([Color::White, Color::Black], String::from("\n")),
-                                ([Color::White, Color::Black], String::from("\n")),
-                            ],
-                        ),
-                        (
-                            ([14, 0], [13, 5]),
-                            vec![
-                                ([Color::White, Color::Black], String::from("\n Quantity ")),
                                 ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
                                 ([Color::White, Color::Black], String::from("\n")),
@@ -372,7 +414,7 @@ pub mod gui {
                     1,
                     vec![
                         (
-                            ([0, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Resourse ")),
                                 ([Color::White, Color::Black], String::from("\n ")),
@@ -382,7 +424,7 @@ pub mod gui {
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
                                 ([Color::White, Color::Black], String::from("\n")),
@@ -391,7 +433,7 @@ pub mod gui {
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
                                 ([Color::White, Color::Black], String::from("\n")),
@@ -400,7 +442,7 @@ pub mod gui {
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
                                 ([Color::White, Color::Black], String::from("\n")),
@@ -409,7 +451,7 @@ pub mod gui {
                             ],
                         ),
                         (
-                            ([14, 0], [13, 5]),
+                            [13, 5],
                             vec![
                                 ([Color::White, Color::Black], String::from("\n Quantity ")),
                                 ([Color::White, Color::Black], String::from("\n")),
@@ -422,6 +464,10 @@ pub mod gui {
             });
 
             vector
+        }
+
+        pub fn give_date() -> Vec<FactsTable> {
+            Vec::new()
         }
     }
 

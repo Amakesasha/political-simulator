@@ -47,7 +47,7 @@ impl ColorR {
 pub struct Render;
 
 #[cfg(feature = "render")]
-type Object = Vec<Vec<(char, [Color; 2],)>>;
+type Object = Vec<Vec<(char, [Color; 2])>>;
 
 #[cfg(feature = "render")]
 impl Render {
@@ -107,7 +107,7 @@ impl Render {
         execute!(stdout, SetForegroundColor(color[0])).error();
         execute!(stdout, SetBackgroundColor(color[1])).error();
 
-        queue!(stdout, Print(" ".repeat(number as usize))).error();
+        queue!(stdout, Print("0".repeat(number as usize))).error();
 
         execute!(stdout, ResetColor).error();
     }
@@ -140,7 +140,7 @@ impl GuiS {
                 }
             }
 
-            gr.window_ok(&true); 
+            gr.window_ok(&true);
         } else if let Err(window_res) = &gr.window {
             for name in window_res {
                 if let Ok(name) = name {
@@ -150,20 +150,37 @@ impl GuiS {
                         }
                     }
                 } else if let Err(name) = name {
-                    #[cfg(feature = "button")]
-                    if let Some(window) = WindowS::vector_give(&self.window, &name[0]) {
-                        if let Some(button) = ButtonS::vector_give(&window.button, &name[1]) {
-                            if button.draw {
-                                ButtonS::render(&button, &Some(window.aabb), stdout);
+                    match name.0 {
+                        GuiObject::Button => {
+                            #[cfg(feature = "button")]
+                            if let Some(window) = WindowS::vector_give(&self.window, &name.1[0]) {
+                                if let Some(button) =
+                                    ButtonS::vector_give(&window.button, &name.1[1])
+                                {
+                                    if button.draw {
+                                        ButtonS::render(&button, &Some(window.aabb), stdout);
+                                    }
+                                }
                             }
                         }
+                        GuiObject::Table(result) => {
+                            #[cfg(feature = "table")]
+                            if let Some(window) = WindowS::vector_give(&self.window, &name.1[0]) {
+                                if let Some(table) = TableS::vector_give(&window.table, &name.1[1])
+                                {
+                                    if table.draw {
+                                        TableS::render(&table, result, stdout);
+                                    }
+                                }
+                            }
+                        }
+                        _ => {}
                     }
                 }
             }
 
-            gr.window_ok(&true);        
+            gr.window_ok(&true);
         }
-        
 
         #[cfg(feature = "button")]
         if let Ok(button_res) = gr.button {
@@ -187,8 +204,6 @@ impl GuiS {
 
             gr.button_ok(&true);
         }
-
-        
 
         #[cfg(feature = "table")]
         if let Ok(table_res) = gr.table {
@@ -295,6 +310,35 @@ impl GuiS {
     }
 }
 
+#[cfg(feature = "window")]
+impl WindowS {
+    pub fn render(&self, stdout: &mut Stdout) {
+        Terminal::teleport_mouse(&[self.aabb.position.x, self.aabb.position.y], stdout);
+
+        #[cfg(feature = "gui")]
+        GuiS::draw_border(
+            &self.aabb,
+            &self.color,
+            &[self.flooded_border, self.interior],
+            stdout,
+        );
+
+        #[cfg(feature = "button")]
+        for button in &self.button {
+            if button.draw {
+                ButtonS::render(&button, &Some(self.aabb), stdout);
+            }
+        }
+
+        #[cfg(feature = "table")]
+        for table in &self.table {
+            if table.draw {
+                TableS::render(&table, true, stdout);
+            }
+        }
+    }
+}
+
 #[cfg(feature = "button")]
 impl ButtonS {
     pub fn render(&self, aabb_0: &Option<AabbS>, stdout: &mut Stdout) {
@@ -321,28 +365,6 @@ impl ButtonS {
     }
 }
 
-#[cfg(feature = "window")]
-impl WindowS {
-    pub fn render(&self, stdout: &mut Stdout) {
-        Terminal::teleport_mouse(&[self.aabb.position.x, self.aabb.position.y], stdout);
-
-        #[cfg(feature = "gui")]
-        GuiS::draw_border(
-            &self.aabb,
-            &self.color,
-            &[self.flooded_border, self.interior],
-            stdout,
-        );
-
-        #[cfg(feature = "button")]
-        for button in &self.button {
-            if button.draw {
-                ButtonS::render(&button, &Some(self.aabb), stdout);
-            }
-        }
-    }
-}
-
 #[cfg(feature = "table")]
 impl TableS {
     pub fn render(&self, border: bool, stdout: &mut Stdout) {
@@ -354,22 +376,22 @@ impl TableS {
 
         let num_x = if num_y != 0 { self.cells[0].1.len() } else { 0 };
 
-        for q in 0..num_y {
-            let mut aabb = AabbS::new(&(
-                [
-                    self.position.x + q as u16 * self.cells[q].0.position.x,
-                    self.position.y + q as u16 * self.cells[q].0.position.y,
-                ],
-                [self.cells[q].0.size.width, self.cells[q].0.size.height],
-            ));
+        let mut data = ([self.position.x, self.position.y], [0, 0]);
 
+        let mut aabb = AabbS::new(&data);
+
+        for q in 0..num_y {
             for w in 0..num_x {
                 if w > 0 {
-                    PositionS::add(
-                        &mut aabb.position,
-                        &[Ok(0), Ok(self.cells[q].0.size.height + self.indentation)],
-                    );
+                    data.0[1] += self.cells[q].0.height + self.indentation;
                 }
+
+                data.1 = [self.cells[q].0.width, self.cells[q].0.height];
+
+                AabbS::update_create(&mut aabb, data);
+
+                PositionS::change(&mut aabb.position, &data.0);
+                SizeS::change(&mut aabb.size, &data.1);
 
                 #[cfg(feature = "gui")]
                 if border {
@@ -386,6 +408,9 @@ impl TableS {
                     GuiS::draw_text(&text.1, &text.0, &aabb, stdout);
                 }
             }
+
+            data.0[1] = self.position.y;
+            data.0[0] += self.cells[q].0.width + self.indentation;
         }
     }
 }

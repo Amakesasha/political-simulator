@@ -57,13 +57,20 @@ pub use std::{
 
 pub use rust_decimal::Decimal;
 
-pub use game_date::create::{gui::*, logic::*, *};
+pub use game_date::create::{gui::*, logic::*};
 pub use r#struct::{
     game::*,
     geometry::*,
-    gui::{button::*, gui::*, gui_render::*, path::*, table::*, window::*},
+    gui::{button::*, gui::*, gui_render::*, path::*, table::*, window::*, *},
     logic::{
-        country::{control::*, country::*, storage::*},
+        country::{
+            control::*, 
+            country::*, 
+            storage::{
+                storage::*,
+                resource::*,
+            },
+        },
         date::*,
         logic::*,
     },

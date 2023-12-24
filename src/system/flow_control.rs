@@ -13,21 +13,6 @@ impl Flow {
 
         loop {
             {
-                let now_update = Instant::now();
-                let elapsed_update = now_update.duration_since(last_output_time_update);
-
-                if elapsed_update >= Duration::from_millis(1000) {
-                    #[cfg(feature = "render")]
-                    game.update(&());
-
-                    last_output_time_update = now_update;
-                }
-
-                if event::poll(Duration::from_millis(1000)).error() {
-                    Flow::event_check(&mut game, stdout);
-                }
-            }
-            {
                 let now_render = Instant::now();
                 let elapsed_render = now_render.duration_since(last_output_time_render);
 
@@ -50,6 +35,21 @@ impl Flow {
                         Duration::from_secs(0)
                     };*/
                     println!("{:?}", elapsed_time.as_secs_f64());
+                }
+            }
+            {
+                let now_update = Instant::now();
+                let elapsed_update = now_update.duration_since(last_output_time_update);
+
+                if elapsed_update >= Duration::from_millis(1000) {
+                    #[cfg(feature = "render")]
+                    game.update(&());
+
+                    last_output_time_update = now_update;
+                }
+
+                if event::poll(Duration::from_millis(1000)).error() {
+                    Flow::event_check(&mut game, stdout);
                 }
             }
         }
@@ -120,47 +120,44 @@ impl ActionE {
         for action in action_vector {
             match action {
                 #[cfg(feature = "window")]
-                ActionE::OpenWindow(action) => {
-                    match action {
-                        GuiActionE::OpenAllClose(meaning) => {
-                            WindowS::open_all_close(&mut game.gui.window, &meaning);
-                            game.gui.gui_render.window_ok(&meaning);
-                        }
-                        GuiActionE::OpenOneClose(name, meaning) => {
-                            WindowS::open_one_close(&mut game.gui.window, &name, &meaning);
-                            game.gui.gui_render.window_err(&meaning, &vec![Ok(name.clone())]);
-                        }
+                ActionE::OpenWindow(action) => match action {
+                    GuiActionE::OpenAllClose(meaning) => {
+                        WindowS::open_all_close(&mut game.gui.window, &meaning);
+                        game.gui.gui_render.window_ok(&meaning);
                     }
-                }
+                    GuiActionE::OpenOneClose(name, meaning) => {
+                        WindowS::open_one_close(&mut game.gui.window, &name, &meaning);
+                        game.gui
+                            .gui_render
+                            .window_err(&meaning, &vec![Ok(name.clone())]);
+                    }
+                },
                 #[cfg(feature = "button")]
-                ActionE::OpenButton(action) => {
-                    match action {
-                        GuiActionE::OpenAllClose(meaning) => {
-                            ButtonS::open_all_close(&mut game.gui.button, &meaning);
-                            game.gui.gui_render.button_ok(&meaning);
-                        }
-                        GuiActionE::OpenOneClose(name, meaning) => {
-                            ButtonS::open_one_close(&mut game.gui.button, &name, &meaning);
-                            game.gui.gui_render.button_err(&meaning, &vec![name.clone()]);
-                        }
+                ActionE::OpenButton(action) => match action {
+                    GuiActionE::OpenAllClose(meaning) => {
+                        ButtonS::open_all_close(&mut game.gui.button, &meaning);
+                        game.gui.gui_render.button_ok(&meaning);
                     }
-                }
+                    GuiActionE::OpenOneClose(name, meaning) => {
+                        ButtonS::open_one_close(&mut game.gui.button, &name, &meaning);
+                        game.gui
+                            .gui_render
+                            .button_err(&meaning, &vec![name.clone()]);
+                    }
+                },
                 #[cfg(feature = "table")]
-                ActionE::OpenTable(action) => {
-                    match action {
-                        GuiActionE::OpenAllClose(meaning) => {
-                            TableS::open_all_close(&mut game.gui.table, &meaning);
-                            game.gui.gui_render.table_ok(&meaning);
-                        }
-                        GuiActionE::OpenOneClose(name, meaning) => {
-                            TableS::open_one_close(&mut game.gui.table, &name, &meaning);
-                            game.gui.gui_render.table_err(
-                                &meaning, 
-                                &vec![(name.clone(), true)]
-                            );
-                        }
+                ActionE::OpenTable(action) => match action {
+                    GuiActionE::OpenAllClose(meaning) => {
+                        TableS::open_all_close(&mut game.gui.table, &meaning);
+                        game.gui.gui_render.table_ok(&meaning);
                     }
-                }
+                    GuiActionE::OpenOneClose(name, meaning) => {
+                        TableS::open_one_close(&mut game.gui.table, &name, &meaning);
+                        game.gui
+                            .gui_render
+                            .table_err(&meaning, &vec![(name.clone(), true)]);
+                    }
+                },
                 ActionE::StartFunction(_name) => {}
                 _ => {}
             }

@@ -7,7 +7,7 @@ pub struct LogicS {
 
     pub(crate) countries: HashMap<String, CountryS>,
 
-    pub(crate) resources_for_construction: [[[f64; 4]; 4]; 2],
+    pub(crate) resources_for_construction: [[[f64; NUM_RES]; NUM_RES]; NUM_STOR + 1],
 }
 
 pub type FactsLogic = (
@@ -15,7 +15,7 @@ pub type FactsLogic = (
     [String; 2],
     Vec<String>,
     Vec<FactsCountry>,
-    [[[f64; 4]; 4]; 2],
+    [[[f64; NUM_RES]; NUM_RES]; NUM_STOR + 1],
 );
 
 impl Create for LogicS {
@@ -40,7 +40,7 @@ impl Create for LogicS {
 
             countries: HashMap::new(),
 
-            resources_for_construction: [[[0.0; 4]; 4]; 2],
+            resources_for_construction: [[[0.0; NUM_RES]; NUM_RES]; NUM_STOR + 1],
         }
     }
 }
