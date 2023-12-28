@@ -15,10 +15,7 @@ impl Create for CountryS {
     fn new(facts: &Self::Facts) -> Self::Output {
         CountryS {
             name: facts.0.clone(),
-            storage: [
-                StorageS::new(&facts.1[0]), 
-                StorageS::new(&facts.1[1])
-            ],
+            storage: [StorageS::new(&facts.1[0]), StorageS::new(&facts.1[1])],
         }
     }
 
@@ -27,6 +24,10 @@ impl Create for CountryS {
             name: String::new(),
             storage: [StorageS::default(); NUM_STOR],
         }
+    }
+
+    fn default_facts() -> Self::Facts {
+        (String::new(), [StorageS::default_facts(); NUM_STOR])
     }
 }
 

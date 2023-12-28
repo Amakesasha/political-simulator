@@ -36,19 +36,23 @@ pub mod storage {
 
         fn default() -> Self::Output {
             StorageS {
-                0: [ResourceS::default(); 4],
+                0: [ResourceS::default(); NUM_RES],
             }
+        }
+
+        fn default_facts() -> Self::Facts {
+            [ResourceS::default_facts(); NUM_RES]
         }
     }
 
     impl Control for StorageS {
-    type Facts = DateS;
+        type Facts = DateS;
 
-    fn update(&mut self, facts: &Self::Facts) {
-        for resource in &mut self.0 {
-            resource.update(&facts);
+        fn update(&mut self, facts: &Self::Facts) {
+            for resource in &mut self.0 {
+                resource.update(&facts);
+            }
         }
-    }
     }
 }
 
@@ -97,17 +101,22 @@ pub mod resource {
                 production_1_factory: 0.0,
             }
         }
+
+        fn default_facts() -> Self::Facts {
+            (0.0, 0, 0.0, 0, 0.0)
+        }
     }
 
     impl Control for ResourceS {
         type Facts = DateS;
 
         fn update(&mut self, facts: &Self::Facts) {
-            let factor = (facts.update[0] + (facts.update[1] * 30) + (facts.update[2] * 360)) as f64;
+            let factor =
+                (facts.update[0] + (facts.update[1] * 30) + (facts.update[2] * 360)) as f64;
 
             let income = self.number_of_factory as f64 * self.production_1_factory * factor;
 
-            if self.quantity + income <= self.storage as f64 * self.capacity_storage { 
+            if self.quantity + income <= self.storage as f64 * self.capacity_storage {
                 self.quantity += income;
             } else {
                 self.quantity = self.storage as f64 * self.capacity_storage;

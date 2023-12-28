@@ -3,11 +3,9 @@ use crate::*;
 #[derive(Debug, Clone)]
 pub struct GameS {
     pub(crate) logic: LogicS,
-    #[cfg(feature = "gui")]
-    pub(crate) gui: GuiS,
 }
 
-pub type FactsGame = (FactsLogic, FactsGui);
+pub type FactsGame = FactsLogic;
 
 impl Create for GameS {
     type Output = GameS;
@@ -15,18 +13,18 @@ impl Create for GameS {
 
     fn new(facts: &Self::Facts) -> Self::Output {
         GameS {
-            logic: LogicS::new(&facts.0),
-            #[cfg(feature = "gui")]
-            gui: GuiS::new(&facts.1),
+            logic: LogicS::new(facts),
         }
     }
 
     fn default() -> Self::Output {
         GameS {
             logic: LogicS::default(),
-            #[cfg(feature = "gui")]
-            gui: GuiS::default(),
         }
+    }
+
+    fn default_facts() -> Self::Facts {
+        LogicS::default_facts()
     }
 }
 
@@ -35,12 +33,14 @@ impl Control for GameS {
 
     fn update(&mut self, _facts: &Self::Facts) {
         self.logic.update(&());
-        self.gui.update(&self.logic);
     }
 }
 
-/*
 lazy_static! {
     pub static ref GAME: Mutex<GameS> = Mutex::new(GameS::default());
 }
-*/
+
+lazy_static! {
+    pub static ref GAME_HASH_MAP: Mutex<HashMap<(String, String), GameS>> =
+        Mutex::new(HashMap::new());
+}

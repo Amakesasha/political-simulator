@@ -1,11 +1,8 @@
-pub mod game_date {
-    pub mod create;
-}
-pub mod script {
-    pub mod error;
-    pub mod rand;
-    pub mod r#trait;
-}
+#![feature(proc_macro_hygiene, decl_macro)]
+
+#[macro_use]
+extern crate rocket;
+
 pub mod r#struct {
     pub mod logic {
         pub mod date;
@@ -17,64 +14,61 @@ pub mod r#struct {
         }
     }
     pub mod game;
-    pub mod geometry;
-    pub mod gui;
+}
+pub mod game_date {
+    pub mod create;
+}
+pub mod script {
+    pub mod rand;
+    pub mod r#trait;
 }
 pub mod system {
-    pub mod flow_control;
-    pub mod render;
-    pub mod terminal;
+    pub mod web {
+        pub mod web;
+        pub mod resourse {
+            pub mod resourse;
+        }
+        pub mod login {
+            pub mod login;
+        }
+        pub mod r#main {
+            pub mod r#main;
+        }
+    }
+    pub mod flow;
 }
-
-// 2_713 Lines of script in the project
 
 fn main() {
-    Flow::control(&mut stdout());
+    GameS::flow();
 }
 
-pub use crossterm::{
-    cursor::{self, Hide, MoveDown, MoveLeft, MoveRight, MoveTo, MoveUp, Show},
-    event::{self, Event, KeyCode, KeyEvent, KeyModifiers},
-    execute, queue,
-    style::{Color, Print, ResetColor, SetBackgroundColor, SetForegroundColor},
-    terminal::{
-        self, disable_raw_mode, enable_raw_mode, Clear, ClearType, EnterAlternateScreen,
-        LeaveAlternateScreen, SetSize,
-    },
+pub use std::{collections::HashMap, fs::File, io::prelude::*, sync::Mutex};
+
+pub use rocket::{
+    config::{Config, Environment},
+    request::{Form, FromParam, FromRequest, Request},
+    response::{content::Html, Redirect},
 };
 
-pub use std::{
-    cell::Cell,
-    collections::HashMap,
-    env,
-    io::{stdout, Stdout, Write},
-    process,
-    process::Command,
-    sync::{Arc, RwLock},
-    thread,
-    time::{Duration, Instant},
-};
+pub use lazy_static::lazy_static;
 
-pub use rust_decimal::Decimal;
-
-pub use game_date::create::{gui::*, logic::*};
-pub use r#struct::{
-    game::*,
-    geometry::*,
-    gui::{button::*, gui::*, gui_render::*, path::*, table::*, window::*, *},
-    logic::{
-        country::{
-            control::*, 
-            country::*, 
-            storage::{
-                storage::*,
-                resource::*,
+pub use crate::{
+    game_date::create::*,
+    r#struct::{
+        game::*,
+        logic::{
+            country::{
+                control::*,
+                country::*,
+                storage::{resource::*, storage::*},
             },
+            date::*,
+            logic::*,
         },
-        date::*,
-        logic::*,
+    },
+    script::{r#trait::*, rand::*},
+    system::{
+        flow::*,
+        web::{login::login::*, r#main::r#main::*, resourse::resourse::*, web::*},
     },
 };
-pub use script::{error::*, r#trait::*, rand::*};
-
-pub use system::{flow_control::*, render::*, terminal::*};

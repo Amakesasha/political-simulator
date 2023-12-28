@@ -1,16 +1,18 @@
 [package]
-name = "game_terminal"
-version = "0.1.4"
+name = "game"
+version = "0.5.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-crossterm = "0.27.0"
+rocket = "0.4.11"
 
 rand = "0.8.5"
 
-rust_decimal = "1.33.1"
+lazy_static = "1.4.0"
+
+
 
 [profile.dev]
 opt-level = 2
@@ -21,17 +23,7 @@ opt-level = 3
 
 
 [features]
-default = ["render", "gui", "window", "button", "table"]
+default = []
 
 draw = []
 event = []
-
-render = []
-
-
-
-gui = []
-
-button = []
-window = []
-table = []
