@@ -28,10 +28,6 @@ impl Create for DateS {
             update: [0, 0, 0],
         }
     }
-
-    fn default_facts() -> Self::Facts {
-        (false, [0; 3], [0; 3])
-    }
 }
 
 impl Control for DateS {
@@ -65,6 +61,8 @@ impl DateS {
     pub fn date_to_string(&self) -> String {
         let date = &self.date;
 
+        let point = ".".to_string();
+
         let day = if date[0] < 10 {
             format!("0{}", date[0])
         } else {
@@ -77,16 +75,14 @@ impl DateS {
             format!("{}", date[1])
         };
 
-        format!("{}.{}.{}", day, month, date[2])
+        format!("{}{}{}{}{}", day, point, month, point, date[2])
     }
 }
 
-#[put("/logic/date/next_date")]
-pub fn next_date() -> String {
-    let mut game = GAME.lock().unwrap();
+impl DateS {
+    pub async fn next_date(game: &mut GameS) -> String {
+        game.update(&());
 
-    game.update(&());
-
-    game.logic.date.date_to_string()
+        game.logic.date.date_to_string()
+    }
 }
-

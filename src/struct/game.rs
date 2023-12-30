@@ -13,7 +13,7 @@ impl Create for GameS {
 
     fn new(facts: &Self::Facts) -> Self::Output {
         GameS {
-            logic: LogicS::new(facts),
+            logic: LogicS::new(&facts),
         }
     }
 
@@ -21,10 +21,6 @@ impl Create for GameS {
         GameS {
             logic: LogicS::default(),
         }
-    }
-
-    fn default_facts() -> Self::Facts {
-        LogicS::default_facts()
     }
 }
 
@@ -36,11 +32,8 @@ impl Control for GameS {
     }
 }
 
+/*
 lazy_static! {
     pub static ref GAME: Mutex<GameS> = Mutex::new(GameS::default());
 }
-
-lazy_static! {
-    pub static ref GAME_HASH_MAP: Mutex<HashMap<(String, String), GameS>> =
-        Mutex::new(HashMap::new());
-}
+*/

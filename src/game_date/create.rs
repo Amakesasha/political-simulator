@@ -2,22 +2,21 @@ use crate::*;
 
 impl GameS {
     pub fn give_date() -> FactsGame {
-        LogicS::give_date()
+        let logic = LogicS::give_date();
+
+        return logic;
     }
 }
 
 impl LogicS {
     pub fn give_date() -> FactsLogic {
-        let data = DateS::give_date();
+        let date = DateS::give_date();
 
-        let country = [String::from("123456"), String::from("Country")];
+        let name = [String::from("123456"), String::from("Country")];
 
-        let password = vec![
-            "123456".to_string(), 
-            "wasd".to_string()
-        ];
+        let password = vec![String::from("123456"), String::from("wasd")];
 
-        let countries = CountryS::give_date();
+        let country = CountryS::give_date();
 
         let resources_for_construction = [
             [
@@ -32,16 +31,10 @@ impl LogicS {
                 [2500.0, 1250.0, 1000.0, 0.0],
                 [7500.0, 3450.0, 2500.0, 0.0],
             ],
-            [[0.0; 4]; 4]
+            [[0.0; 4]; 4],
         ];
 
-        (
-            data,
-            country,
-            password,
-            countries,
-            resources_for_construction
-        )
+        (date, name, password, country, resources_for_construction)
     }
 }
 
@@ -53,7 +46,14 @@ impl DateS {
 
 impl CountryS {
     pub fn give_date() -> Vec<FactsCountry> {
-        let mut vector: Vec<FactsCountry> = Vec::new();
+        let mut vector = Vec::new();
+
+        /*
+            0 - quantity
+            1 - storage
+            2 - number_of_factory
+            3 - production_1_factory
+        */
 
         vector.push({
             (
@@ -86,10 +86,10 @@ impl CountryS {
                         (1000.0, 5, 100.0, 1, 0.25),
                     ],
                     [
-                        (0.0, 5, 100.0, 3, 5.0), 
-                        (0.0, 5, 100.0, 2, 2.5), 
-                        (0.0, 5, 100.0, 1, 1.25), 
-                        (0.0, 5, 100.0, 1, 0.25)
+                        (0.0, 5, 100.0, 3, 5.0),
+                        (0.0, 5, 100.0, 2, 2.5),
+                        (0.0, 5, 100.0, 1, 1.25),
+                        (0.0, 5, 100.0, 1, 0.25),
                     ],
                 ],
             )

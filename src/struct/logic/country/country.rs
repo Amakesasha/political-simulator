@@ -25,10 +25,6 @@ impl Create for CountryS {
             storage: [StorageS::default(); NUM_STOR],
         }
     }
-
-    fn default_facts() -> Self::Facts {
-        (String::new(), [StorageS::default_facts(); NUM_STOR])
-    }
 }
 
 impl Give for CountryS {

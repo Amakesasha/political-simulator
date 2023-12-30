@@ -36,12 +36,8 @@ pub mod storage {
 
         fn default() -> Self::Output {
             StorageS {
-                0: [ResourceS::default(); NUM_RES],
+                0: [ResourceS::default(); 4],
             }
-        }
-
-        fn default_facts() -> Self::Facts {
-            [ResourceS::default_facts(); NUM_RES]
         }
     }
 
@@ -101,10 +97,6 @@ pub mod resource {
                 production_1_factory: 0.0,
             }
         }
-
-        fn default_facts() -> Self::Facts {
-            (0.0, 0, 0.0, 0, 0.0)
-        }
     }
 
     impl Control for ResourceS {
@@ -116,11 +108,11 @@ pub mod resource {
 
             let income = self.number_of_factory as f64 * self.production_1_factory * factor;
 
-            if self.quantity + income <= self.storage as f64 * self.capacity_storage {
-                self.quantity += income;
-            } else {
-                self.quantity = self.storage as f64 * self.capacity_storage;
-            }
+            //if self.quantity + income <= self.storage as f64 * self.capacity_storage {
+            self.quantity += income;
+            //} else {
+            //    self.quantity = self.storage as f64 * self.capacity_storage;
+            //}
         }
     }
 }
