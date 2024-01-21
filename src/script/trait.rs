@@ -1,16 +1,26 @@
 use crate::*;
 
+use core::fmt::Debug;
+
 pub trait Create {
     type Output;
     type Facts;
+
+    //
 
     fn new(facst: &Self::Facts) -> Self::Output;
 
     fn default() -> Self::Output;
 
+    fn default_facts() -> Self::Facts;
+
+    //
+
     fn update_create(date: &mut Self::Output, facst: Self::Facts) {
         *date = Self::new(&facst);
     }
+
+    //
 
     fn vec_new(vector_facts: &Vec<Self::Facts>) -> Vec<Self::Output> {
         let mut vector = Vec::new();
@@ -40,6 +50,18 @@ pub trait Create {
 
         hash_map
     }
+
+    //
+
+    fn test()
+    where
+        <Self as script::r#trait::Create>::Output: PartialEq + Debug,
+    {
+        let default_0 = Self::default();
+        let default_1 = Self::new(&Self::default_facts());
+
+        assert_eq!(default_0, default_1);
+    }
 }
 
 pub trait Give {
@@ -52,6 +74,8 @@ pub trait Give {
         facts: &'a mut Vec<Self::Output>,
         id: &Self::ID,
     ) -> Option<&'a mut Self::Output>;
+
+    //
 
     fn hashmap_give<'a>(
         facts: &'a HashMap<Self::ID, Self::Output>,
@@ -70,19 +94,4 @@ pub trait Control {
     type Facts;
 
     fn update(&mut self, facts: &Self::Facts);
-}
-
-pub trait Gui {
-    type Output;
-
-    fn open_all_close(vec: &mut Vec<Self::Output>, meaning: &bool);
-
-    fn open_one_close(vec: &mut Vec<Self::Output>, name: &String, meaning: &bool);
-}
-
-pub trait Geometry {
-    type Output;
-
-    fn add(geometry: &mut Self::Output, data: &[Result<u16, u16>; 2]);
-    fn change(geometry: &mut Self::Output, data: &[u16; 2]);
 }
